@@ -68,13 +68,6 @@ class StoreProductRequest extends FormRequest
             'images.*' => [
                 'image',
             ],
-            'keys' => [
-                'required',
-                'array',
-            ],
-            'key.*' => [
-                'string',
-            ],
 
         ];
     }
