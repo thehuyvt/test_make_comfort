@@ -16,6 +16,7 @@
             cursor: pointer;
         }
     </style>
+    <link rel="stylesheet" href="{{ asset('dists/select2-4.0.13/dist/css/select2.min.css') }}">
 @endpush
 @section('content')
     @if ($errors->any())
@@ -96,6 +97,40 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group">
+                                    <label>Options</label>
+                                    <table class="table" id="table_options">
+                                        <thead>
+                                            <tr>
+                                                <th>Key</th>
+                                                <th width='75%'>Values</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <input type="text" class="form-control options_key">
+                                                </td>
+                                                <td>
+                                                    <select multiple class="select2 options_values"></select>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th colspan="2">
+                                                    <button type="button" id="btn_add_option" class="btn btn-secondary">
+                                                        Add option
+                                                    </button>
+                                                    <button type="button" id="btn_generate" class="btn btn-primary">
+                                                        Generate
+                                                    </button>
+                                                </th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+
                             </div> <!-- end col-->
 
                             <div class="col-xl-6">
@@ -109,85 +144,19 @@
                                     <input type="file" class="form-control-file" id="single_image" name="thumb">
                                     <div id="single_image_preview"></div>
                                 </div>
-{{--                                <div class="form-group mt-3 mt-xl-0">--}}
-{{--                                    <label for="projectname">Ảnh sản phẩm</label>--}}
-{{--                                    --}}{{--                                    <p class="text-muted font-14">Recommended thumbnail size 800x400 (px).</p>--}}
-{{--                                    <!-- File Upload -->--}}
-{{--                                    <div class="dropzone">--}}
-{{--                                        <div class="fallback">--}}
-{{--                                            <input type="file" name="images"  value="{{old('images')}}"/>--}}
-{{--                                        </div>--}}
-
-{{--                                        <div class="dz-message needsclick">--}}
-{{--                                            <i class="h1 text-muted dripicons-cloud-upload"></i>--}}
-{{--                                            <h3>Drop files here or click to upload.</h3>--}}
-{{--                                        </div>--}}
-
-{{--                                        <!-- Preview -->--}}
-{{--                                        <div class="dropzone-previews mt-3" id="file-images"></div>--}}
-
-{{--                                        <!-- file preview template -->--}}
-{{--                                        <div class="d-none upload-product-preview">--}}
-{{--                                            <div class="card mt-1 mb-0 shadow-none border">--}}
-{{--                                                <div class="p-2">--}}
-{{--                                                    <div class="row align-items-center">--}}
-{{--                                                        <div class="col-auto">--}}
-{{--                                                            <img data-dz-thumbnail src="#"--}}
-{{--                                                                 class="avatar-sm rounded bg-light"--}}
-{{--                                                                 alt="">--}}
-{{--                                                        </div>--}}
-{{--                                                        <div class="col pl-0">--}}
-{{--                                                            <a href="javascript:void(0);"--}}
-{{--                                                               class="text-muted font-weight-bold"--}}
-{{--                                                               data-dz-name></a>--}}
-{{--                                                            <p class="mb-0" data-dz-size></p>--}}
-{{--                                                        </div>--}}
-{{--                                                        <div class="col-auto">--}}
-{{--                                                            <!-- Button -->--}}
-{{--                                                            <a href="" class="btn btn-link btn-lg text-muted"--}}
-{{--                                                               data-dz-remove>--}}
-{{--                                                                <i class="dripicons-cross"></i>--}}
-{{--                                                            </a>--}}
-{{--                                                        </div>--}}
-{{--                                                    </div>--}}
-{{--                                                </div>--}}
-{{--                                            </div>--}}
-{{--                                        </div>--}}
-{{--                                    </div>--}}
-
-{{--                                    <!-- end file preview template -->--}}
-{{--                                </div>--}}
-
-{{--                                <div class="form-group mt-3 mt-xl-0">--}}
-{{--                                    <label for="projectname">Ảnh nhỏ</label>--}}
-{{--                                    --}}{{--                                    <p class="text-muted font-14">Recommended thumbnail size 800x400 (px).</p>--}}
-{{--                                    <div class="dropzone" id="my-dropzone">--}}
-{{--                                        <div class="fallback">--}}
-{{--                                            <input type="file" name="thumb"  value="{{old('thumb')}}"/>--}}
-{{--                                        </div>--}}
-{{--                                        <div class="dz-message needsclick">--}}
-{{--                                            <i class="h1 text-muted dripicons-cloud-upload"></i>--}}
-{{--                                            <h3>Drop files here or click to upload.</h3>--}}
-{{--                                        </div>--}}
-{{--                                    </div>--}}
-{{--                                    <!-- File Upload -->--}}
-{{--                                </div>--}}
-
                             </div> <!-- end col-->
                             <div class="container mt-5 mb-5">
-                                <h4>Thêm các biến thể sản phẩm</h4>
-                                <table class="table">
+                                <h4>Variants</h4>
+                                <table class="table" id="table_variants">
                                     <thead>
-                                    <tr>
-                                        <th>Key</th>
-                                        <th>Số lượng</th>
-                                    </tr>
+                                        <tr>
+                                            <!-- Đầu bảng sẽ được thêm động -->
+                                        </tr>
                                     </thead>
-                                    <tbody id="variantsTableBody">
-                                    <!-- Variants will be added here -->
+                                    <tbody>
+                                        <!-- Các hàng sẽ được thêm vào đây -->
                                     </tbody>
                                 </table>
-                                <span id="addVariantBtn" class="btn btn-primary">Thêm biến thể</span>
                             </div>
                             <input type="submit" class="btn btn-block btn-primary" value="Thêm sản phẩm">
                         </div>
@@ -205,6 +174,7 @@
 
     <!-- File upload js -->
     <script src="{{asset('js/ui/component.fileupload.js')}}"></script>
+    <script src="{{ asset('dists/select2-4.0.13/dist/js/select2.min.js') }}"></script>
 
     <script>
 
@@ -265,38 +235,110 @@
             }
         });
 
-        //Xu ly them option
-        function addOption() {
-            var variantsTableBody = document.getElementById('variantsTableBody');
-            var newRow = document.createElement('tr');
-            newRow.innerHTML = `
-                <td><input type="text" class="form-control" name="keys[]" placeholder="Key"></td>
-                <td><input type="number" class="form-control" name="quantities[]" min='0' placeholder="0"></td>
-          `;
-            variantsTableBody.appendChild(newRow);
+        function setSelect2(){
+            $('.options_values').select2({
+                tags: true
+            });
         }
-        addOption();
-        document.getElementById('addVariantBtn').addEventListener('click', addOption);
+        $(document).ready(function () {
+            setSelect2();
+            $('#btn_add_option').click(function () {
+                // Tạo phần tử tr và td mới
+                var $tr = $("<tr>");
+                var $keyTd = $("<td>");
+                var $valueTd = $("<td>");
 
+                // Tạo và cấu hình các input
+                var $key = $("<input>").attr({
+                    type: "text",
+                    class: "form-control options_key",
+                });
+                var $value = $("<select>").attr({
+                    class: "form-control options_values",
+                    multiple: true,
+                });
+
+                // Gắn các input vào các td
+                $keyTd.append($key);
+                $valueTd.append($value);
+
+                // Gắn các td vào tr
+                $tr.append($keyTd).append($valueTd);
+
+                // Thêm tr vào table
+                $("#table_options tbody").append($tr);
+                setSelect2();
+            });
+
+            $('#btn_generate').click(function() {
+                var options = {}; // Đối tượng để lưu trữ tất cả các options
+
+                // Thu thập tất cả các options từ các input và select
+                $('.options_key').each(function(index) {
+                    var key = $(this).val();
+                    var values = $(this).closest('tr').find('.options_values').val() || [];
+                    options[key] = values;
+                });
+
+                // Tạo tiêu đề cho bảng
+                var $headerRow = $('#table_variants thead tr');
+                $headerRow.empty(); // Làm trống tiêu đề cũ
+                $headerRow.append('<th>Quantity</th>'); // Thêm cột quantity
+                Object.keys(options).forEach(function(key) {
+                    $headerRow.prepend($('<th>').text(key)); // Thêm tiêu đề cột cho mỗi option
+                });
+
+                // Tạo các hàng dựa trên sự kết hợp của các options
+                var productVariants = generateProductVariants(Object.keys(options), options);
+                var $tbody = $('#table_variants tbody');
+                $tbody.empty(); // Làm trống tbody trước khi thêm hàng mới
+                productVariants.forEach(function(variant) {
+                    let variantKey = [];
+                    var $tr = $('<tr>');
+                    let values = Object.keys(variant);
+
+                    values.forEach(function(key, index) {
+                        $tr.prepend($('<td>').text(variant[key]));
+                        variantKey.push(variant[key]);
+                        
+                        if(index === values.length - 1){
+                            variantKey = variantKey.join('-');
+                            $tr.append($('<td>').append($('<input>').attr({
+                                type: 'number',
+                                name: `options[${variantKey}]`,
+                                class: 'form-control',
+                                value: '1'
+                            }))); // Cột quantity với input
+                        }
+                    });
+                    $tbody.append($tr);
+                });
+            });
+        });
+
+        function generateProductVariants(optionKeys, options) {
+            var results = [];
+            var currentCombo = {};
+
+            function combineOptions(depth) {
+                if (depth === optionKeys.length) {
+                    results.push({...currentCombo});
+                    return;
+                }
+
+                var optionKey = optionKeys[depth];
+                var values = options[optionKey];
+
+                if (values.length === 0) values = ['']; // Nếu không có giá trị nào, thêm một giá trị rỗng
+
+                values.forEach(function(value) {
+                    currentCombo[optionKey] = value;
+                    combineOptions(depth + 1);
+                });
+            }
+
+            combineOptions(0);
+            return results;
+        }
     </script>
-
-{{--    <script>--}}
-{{--        Dropzone.autoDiscover = false;--}}
-{{--        $(document).ready(function () {--}}
-{{--            // Initialize Dropzone--}}
-{{--            var myDropzone = new Dropzone("#my-dropzone", {--}}
-{{--                url: "{{route('products.store')}}",--}}
-{{--                addRemoveLinks: true,--}}
-{{--                dictRemoveFile: "Remove",--}}
-{{--                dictDefaultMessage: "Drop files here or click to upload",--}}
-{{--                maxFiles: 1// Allow only one file to be uploaded--}}
-{{--            });--}}
-
-{{--            // Event when files are removed--}}
-{{--            myDropzone.on("removedfile", function (file) {--}}
-{{--                // Do something when a file is removed, for example, update your server-side storage--}}
-{{--                console.log("File removed: " + file.name);--}}
-{{--            });--}}
-{{--        });--}}
-{{--    </script>--}}
 @endpush
