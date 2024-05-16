@@ -59,5 +59,5 @@ Route::post('login-admin', [AuthAdminController::class, 'processLogin'])->name('
 
 //Customer interface
 
-Route::get('', [CustomerController::class, 'index'])->name('customers.index');
+Route::get('/', [CustomerController::class, 'index'])->name('customers.index');
 Route::get('/product/{slug}', [CustomerController::class, 'productDetail'])->name('product.detail');
