@@ -30,7 +30,6 @@ class LoginRequest extends FormRequest
             'password'=>[
                 'required',
                 'string',
-                'between: 6, 16',
             ],
         ];
     }
