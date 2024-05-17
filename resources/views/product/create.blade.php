@@ -177,7 +177,7 @@
     <script src="{{ asset('dists/select2-4.0.13/dist/js/select2.min.js') }}"></script>
 
     <script>
-
+        //Preview ảnh
         document.getElementById('product_images').addEventListener('change', function(event) {
             const previewContainer = document.getElementById('preview-container');
             previewContainer.innerHTML = ''; // Xóa bất kỳ xem trước nào đã tồn tại trước đó
@@ -194,15 +194,6 @@
                     img.classList.add('preview-image');
                     imagePreview.appendChild(img);
 
-                    const deleteButton = document.createElement('button');
-                    deleteButton.textContent = 'Xóa';
-                    deleteButton.classList.add('delete-button');
-                    deleteButton.addEventListener('click', function() {
-                        previewContainer.removeChild(imagePreview);
-                        // Có thể thêm mã ở đây để xóa ảnh tương ứng khỏi cơ sở dữ liệu hoặc bất kỳ xử lý nào khác.
-                    });
-
-                    imagePreview.appendChild(deleteButton);
                     previewContainer.appendChild(imagePreview);
                 };
 
@@ -235,9 +226,11 @@
             }
         });
 
+        //Add options
+
         function setSelect2(){
             $('.options_values').select2({
-                tags: true
+                tags: true,
             });
         }
         $(document).ready(function () {
@@ -300,7 +293,7 @@
                     values.forEach(function(key, index) {
                         $tr.prepend($('<td>').text(variant[key]));
                         variantKey.push(variant[key]);
-                        
+
                         if(index === values.length - 1){
                             variantKey = variantKey.join('-');
                             $tr.append($('<td>').append($('<input>').attr({
