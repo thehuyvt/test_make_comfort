@@ -82,8 +82,6 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request)
     {
 
-//        $arr = $request->validated();
-
         $this->model::query()->create($request->validated());
         $product = $this->model::query()->where('slug', $request->slug)->first();
         $path = Storage::disk('public')->putFile('uploads/'.$product->id.'/thumb', $request->file('thumb'));
@@ -100,19 +98,14 @@ class ProductController extends Controller
         }
 
         //product_variants
-        $listVariants = [];
-        $length =  count($request->keys);
-        for ($i = 0; $i < $length; $i++){
-            if (!empty($request->keys[$i])){
-                $listVariants[$i]['key'] = $request->keys[$i];
-                if ($request->quantities[$i] === null){
-                    $listVariants[$i]['quantity'] = 0;
-                }else{
-                    $listVariants[$i]['quantity'] = $request->quantities[$i];
-                }
-            }
+        $options = $request->options;
+//        dd($options);
+        foreach ($options as $key => $quantity){
+            $product->variants()->create([
+                'key' => $key,
+                'quantity' => $quantity,
+            ]);
         }
-        $product->variants()->createMany($listVariants);
 
         return redirect()->route('products.index')->with('success', 'Thêm sản phẩm thành công!');
     }
