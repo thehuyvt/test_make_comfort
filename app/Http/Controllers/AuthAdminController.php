@@ -65,6 +65,6 @@ class AuthAdminController extends Controller
     public function logout()
     {
         session()->flush();
-        return redirect()->route('admin.logout');
+        return redirect()->route('admin.login');
     }
 }
