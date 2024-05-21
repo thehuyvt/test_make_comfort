@@ -4,6 +4,7 @@
 	<title>Home</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+{{--    <link href="{{asset('css/icons.min.css')}}" rel="stylesheet" type="text/css" />--}}
 <!--===============================================================================================-->
 	<link rel="icon" type="image/png" href="{{asset('customer/images/icons/favicon.png')}}"/>
 <!--===============================================================================================-->

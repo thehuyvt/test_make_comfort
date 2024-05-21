@@ -13,17 +13,27 @@
                         Help & FAQs
                     </a>
 
-                    <a href="#" class="flex-c-m trans-04 p-lr-25">
-                        My Account
-                    </a>
+                    @if(session()->has('customer_id'))
 
-                    <a href="#" class="flex-c-m trans-04 p-lr-25">
-                        EN
-                    </a>
+                        <a href="{{route('customers.profile')}}" class=" flex-c-m trans-04 p-lr-25">
+                            Hi, {{session()->get('customer_name')}} Your Profile
+                        </a>
 
-                    <a href="#" class="flex-c-m trans-04 p-lr-25">
-                        USD
-                    </a>
+
+                        <a href="{{route('customers.logout')}}" class="flex-c-m trans-04 p-lr-25">
+                            Sign Out
+                        </a>
+                    @endif
+                    @if(!session()->has('customer_id'))
+                        <a href="{{route("customers.login")}}" class="flex-c-m trans-04 p-lr-25">
+                            Sign In
+                        </a>
+
+                        <a href="{{route('customers.register')}}" class="flex-c-m trans-04 p-lr-25">
+                            Sign Up
+                        </a>
+                    @endif
+
                 </div>
             </div>
         </div>
