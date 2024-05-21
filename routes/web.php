@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthAdminController;
+use App\Http\Controllers\AuthCustomerController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProductController;
@@ -21,7 +22,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware([LoginAdminMiddleware::class])->group(function (){
     Route::get('dashboard', [AuthAdminController::class, 'dashboard'])->name('dashboard');
-    Route::get('logout', [AuthAdminController::class, 'logout'])->name('admin.logout');
+
+    Route::get('logout-admin', [AuthAdminController::class, 'logout'])->name('admin.logout');
 
     Route::group(['prefix' => 'categories', 'as'=>'categories.'], function (){
         Route::get('', [CategoryController::class, 'index'])->name('index');
@@ -56,8 +58,16 @@ Route::get('login-admin', [AuthAdminController::class, 'login'])->name('admin.lo
 Route::post('login-admin', [AuthAdminController::class, 'processLogin'])->name('admin.process-login');
 
 
+//Customer
+Route::get('register', [AuthCustomerController::class, 'register'])->name('customers.register');
+Route::post('register', [AuthCustomerController::class, 'processRegister'])->name('customers.process-register');
+Route::get('login', [AuthCustomerController::class, 'login'])->name('customers.login');
+Route::post('login', [AuthCustomerController::class, 'processLogin'])->name('customers.process-login');
 
-//Customer interface
+//Customer
+Route::get('profile', [AuthCustomerController::class, 'profile'])->name('customers.profile');
+Route::get('logout', [AuthCustomerController::class, 'logout'])->name('customers.logout');
 
+//Guest
 Route::get('/', [CustomerController::class, 'index'])->name('customers.index');
 Route::get('/product/{slug}', [CustomerController::class, 'productDetail'])->name('product.detail');
