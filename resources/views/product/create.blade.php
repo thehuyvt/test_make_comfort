@@ -3,12 +3,13 @@
     <style>
         .image-preview {
             display: inline-block;
+            margin-top: 10px;
             margin-right: 10px;
         }
 
         .image-preview img {
             max-width: 100px;
-            max-height: 100px;
+            max-height: 150px;
             margin-bottom: 5px;
         }
 
@@ -32,9 +33,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <form action="{{route('products.store')}}" method="post" enctype="multipart/form-data" data-plugin="dropzone"
-                          data-previews-container="#file-images"
-                          data-upload-preview-template=".upload-product-preview">
+                    <form action="{{route('products.store')}}" method="post" enctype="multipart/form-data">
                         @csrf
                         <div class="row">
                             <div class="col-xl-6" data-select2-id="6">
@@ -68,7 +67,7 @@
                                            placeholder="Giá bán sản phẩm" value="{{old('sale_price')}}">
                                 </div>
 
-                                <div class="form-group" data-select2-id="5">
+                                <div class="form-group">
                                     <label for="project-overview">Loại sản phẩm</label>
 
                                     <select class="form-control select2 select2-hidden-accessible" name="category_id" data-toggle="select2"

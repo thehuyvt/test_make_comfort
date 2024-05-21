@@ -30,9 +30,24 @@ class ProductController extends Controller
 
         View::share('title', $title);
     }
-    public function index()
+    public function index(Request $request)
     {
-        return view('product.index');
+        $listProducts = $this->model::query()
+            ->orWhere('name', 'like', '%'.$request->key.'%')
+            ->orWhere('slug', 'like', '%'.$request->key.'%')
+            ->paginate(10);
+        foreach ($listProducts as $product){
+            $product->created_date = $product->dateCreated;
+            $product->category_name = $product->category->name;
+            $product->status = ProductStatusEnum::getNameStatus($product->status);
+        }
+        $categories = Category::query()->get();
+        $listStatus = ProductStatusEnum::getArrayStatus();
+        return view('product.index',[
+            'listProducts' => $listProducts,
+            'categories'=>$categories,
+            'listStatus'=>$listStatus,
+        ]);
     }
 
     /**
