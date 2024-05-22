@@ -32,10 +32,20 @@ class ProductController extends Controller
     }
     public function index(Request $request)
     {
-        $listProducts = $this->model::query()
-            ->orWhere('name', 'like', '%'.$request->key.'%')
-            ->orWhere('slug', 'like', '%'.$request->key.'%')
-            ->paginate(10);
+//        dd((int)$request->status);
+        $listProducts = $this->model::query();
+        if (!empty($request->category)){
+            $listProducts = $listProducts->where('category_id', $request->category);
+        }
+        if (!empty($request->status)){
+            $listProducts = $listProducts->where('status', $request->status);
+        }
+        if (!empty($request->key)){
+            $listProducts = $listProducts->where('name', 'like', '%'.$request->key.'%')
+                ->orWhere('slug', 'like', '%'.$request->key.'%');
+        }
+        $listProducts = $listProducts->paginate(10);
+//        dd($listProducts);
         foreach ($listProducts as $product){
             $product->created_date = $product->dateCreated;
             $product->category_name = $product->category->name;
@@ -43,6 +53,7 @@ class ProductController extends Controller
         }
         $categories = Category::query()->get();
         $listStatus = ProductStatusEnum::getArrayStatus();
+//        dd($listStatus['Mở bán']->value);
         return view('product.index',[
             'listProducts' => $listProducts,
             'categories'=>$categories,
@@ -136,9 +147,9 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($productId)
+    public function edit($slug)
     {
-        $product = $this->model::query()->find($productId);
+        $product = $this->model::query()->where('slug', $slug)->first();
         $categories = Category::query()->get();
         $listStatus = ProductStatusEnum::getArrayStatus();
         return view('product.edit', [

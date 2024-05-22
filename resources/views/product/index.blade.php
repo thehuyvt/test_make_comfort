@@ -25,15 +25,51 @@
 {{--                            </div>--}}
 {{--                        </div><!-- end col-->--}}
                     </div>
-                    <div class="row mb-2">
-                        <div class="col-sm-4">
-
+{{--                    search and fill product--}}
+                    <form id="searchForm" action="" method="get" class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="category">Loại sản phẩm</label>
+                                <select class="form-control" name="category">
+                                    <option value="">Tất cả</option>
+                                    @foreach($categories as $category)
+                                        <option value="{{ $category->id }}"
+                                            @if((int)request()->get('category') === $category->id)
+                                                selected
+                                            @endif>
+                                            {{ $category->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
 
-                    </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="status">Trạng thái</label>
+                                <select class="form-control" name="status">
+                                    <option value="">Tất cả</option>
+                                    @foreach($listStatus as $key => $status)
+                                        <option value="{{$status->value}}" @if((int)request()->get('status') === $status->value) selected @endif>{{$key}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="key">Tên hoặc slug sản phẩm</label>
+                                <input type="text" class="form-control" value="{{request()->get('key')}}" name="key">
+                            </div>
+                        </div>
+                        <div class="col-sm-3  form-group" >
+                            <div class="">
+                                <button type="submit" class="btn btn-primary form-control"  style="margin-top: 29px;">Tìm kiếm</button>
+                            </div>
+                        </div>
+
+                    </form>
 
                     <table class="table table-striped text-center" id="table-index">
-
                         <thead>
                         <tr>
                             <th>Ảnh</th>
@@ -49,7 +85,7 @@
                         @foreach($listProducts as $product)
                             <tr>
                                 <td class="sorting_1">
-                                    <a href="{{route('products.edit', $product->id)}}" class="text-body">
+                                    <a href="{{route('products.edit', $product->slug)}}" class="text-body">
                                         <img src="{{asset('storage/'.$product->thumb)}}" alt="img" title="contact-img" class="rounded mr-3" height="48">
                                     </a>
                                     <br>
@@ -60,14 +96,14 @@
                                 <td>{{$product->sale_price}}</td>
                                 <td>{{$product->status}}</td>
                                 <td>
-                                    <a href="{{route('products.edit', $product->id)}}" class="action-icon"> <i class="mdi mdi-square-edit-outline"></i></a>
+                                    <a href="{{route('products.edit', $product->slug)}}" class="action-icon"> <i class="mdi mdi-square-edit-outline"></i></a>
                                 </td>
                             </tr>
                         @endforeach
                         </tbody>
                     </table>
-
                 </div> <!-- end card-body-->
+                {{ $listProducts->links() }}
             </div> <!-- end card-->
         </div> <!-- end col -->
     </div>

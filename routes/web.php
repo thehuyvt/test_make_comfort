@@ -39,7 +39,7 @@ Route::middleware([LoginAdminMiddleware::class])->group(function (){
         Route::get('show/{productId}', [ProductController::class, 'show'])->name('show');
         Route::get('create', [ProductController::class, 'create'])->name('create');
         Route::post('store', [ProductController::class, 'store'])->name('store');
-        Route::get('edit/{productId}', [ProductController::class, 'edit'])->name('edit');
+        Route::get('edit/{slug}', [ProductController::class, 'edit'])->name('edit');
         Route::put('update/{productId}', [ProductController::class, 'update'])->name('update');
     });
 

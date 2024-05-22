@@ -3,7 +3,7 @@ namespace App\Enums;
 
 enum ProductStatusEnum: int
 {
-    case STOP_SELLING = 0;
+    case STOP_SELLING = 2;
     case ON_SALE = 1;
 
     public static function getArrayStatus()
@@ -17,7 +17,7 @@ enum ProductStatusEnum: int
     public static function getNameStatus($value)
     {
         return array_search($value, [
-            'Ngưng bán' => 0,
+            'Ngưng bán' => 2,
             'Mở bán' => 1,
 
         ], true);

@@ -67,7 +67,7 @@
                                            placeholder="Giá bán sản phẩm" value="{{old('sale_price')}}">
                                 </div>
 
-                                <div class="form-group">
+                                <div class="form-group" data-select2-id="5">
                                     <label for="project-overview">Loại sản phẩm</label>
 
                                     <select class="form-control select2 select2-hidden-accessible" name="category_id" data-toggle="select2"
