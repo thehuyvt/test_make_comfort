@@ -73,11 +73,8 @@ class CustomerController extends Controller
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Customer $customer)
+    public function cart()
     {
-        //
+        echo 'Cart';
     }
 }

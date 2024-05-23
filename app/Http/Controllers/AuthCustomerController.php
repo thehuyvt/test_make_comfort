@@ -58,6 +58,7 @@ class AuthCustomerController extends Controller
         if ($customer && Hash::check($request->password, $customer->password)) {
             session()->put('customer_id', $customer->id);
             session()->put('customer_name', $customer->name);
+            session()->put('customer_email', $customer->email);
             session()->put('customer_address', $customer->address);
             session()->put('customer_phone_number', $customer->phone_number);
             return redirect()->route('customers.index');
@@ -72,6 +73,7 @@ class AuthCustomerController extends Controller
     {
         session()->forget('customer_id');
         session()->forget('customer_name');
+        session()->forget('customer_email');
         session()->forget('customer_address');
         session()->forget('customer_phone_number');
         return redirect()->route('customers.index');

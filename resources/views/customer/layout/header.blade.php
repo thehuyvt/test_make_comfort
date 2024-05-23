@@ -86,9 +86,17 @@
                         <i class="zmdi zmdi-search"></i>
                     </div>
 
-                    <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" data-notify="2">
-                        <i class="zmdi zmdi-shopping-cart"></i>
-                    </div>
+                    @if(session()->has('customer_id'))
+                        <div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" data-notify="2">
+                            <i class="zmdi zmdi-shopping-cart"></i>
+                        </div>
+                    @endif
+
+                    @if(!session()->has('customer_id'))
+                        <a href="{{route('customers.login')}}" class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 ">
+                            <i class="zmdi zmdi-shopping-cart"></i>
+                        </a>
+                    @endif
 
                     <a href="#" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="0">
                         <i class="zmdi zmdi-favorite-outline"></i>
@@ -111,9 +119,18 @@
                 <i class="zmdi zmdi-search"></i>
             </div>
 
-            <div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" data-notify="2">
-                <i class="zmdi zmdi-shopping-cart"></i>
-            </div>
+            @if(session()->has('customer_id'))
+                <div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" data-notify="2">
+                    <i class="zmdi zmdi-shopping-cart"></i>
+                </div>
+            @endif
+
+            @if(!session()->has('customer_id'))
+                <a href="{{route('customers.login')}}" class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 ">
+                    <i class="zmdi zmdi-shopping-cart"></i>
+                </a>
+            @endif
+
 
             <a href="#" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti" data-notify="0">
                 <i class="zmdi zmdi-favorite-outline"></i>
@@ -198,7 +215,7 @@
     <div class="modal-search-header flex-c-m trans-04 js-hide-modal-search">
         <div class="container-search-header">
             <button class="flex-c-m btn-hide-modal-search trans-04 js-hide-modal-search">
-                <img src="images/icons/icon-close2.png" alt="CLOSE">
+                <img src="{{asset('customer/images/icons/icon-close2.png')}}" alt="CLOSE">
             </button>
 
             <form class="wrap-search-header flex-w p-l-15">
