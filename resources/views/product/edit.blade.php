@@ -13,7 +13,11 @@
             margin-bottom: 5px;
         }
 
+        .delete-icon {
+            cursor: pointer;
+        }
     </style>
+    <link rel="stylesheet" href="{{ asset('dists/select2-4.0.13/dist/css/select2.min.css') }}">
 @endpush
 @section('content')
     @if ($errors->any())
@@ -29,53 +33,51 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-{{--                    <form action="{{route('products.update', $product->id)}}" method="post" enctype="multipart/form-data" data-plugin="dropzone"--}}
-{{--                          data-previews-container="#file-images"--}}
-{{--                          data-upload-preview-template=".upload-product-preview">--}}
-                    <form action="{{route('products.update', $product->id)}}" method="post" enctype="multipart/form-data">
+                    <form action="{{route('products.update', $product)}}" id="form" method="post" enctype="multipart/form-data">
                         @csrf
-                        @method('PUT')
                         <div class="row">
                             <div class="col-xl-6" data-select2-id="6">
                                 <div class="form-group">
                                     <label for="name">Tên sản phẩm</label>
                                     <input type="text" id="name" name="name" class="form-control"
-                                           placeholder="Nhập tên sản phẩm" value="{{$product->name}}">
+                                           placeholder="Nhập tên sản phẩm" value="{{ $product->name }}">
                                 </div>
 
                                 <div class="form-group">
                                     <label for="slug">Slug</label>
                                     <input type="text" id="slug" name="slug" class="form-control"
-                                           placeholder="Nhập slug" value="{{$product->slug}}">
+                                           placeholder="Nhập slug" value="{{ $product->slug }}">
                                 </div>
 
                                 <div class="form-group">
                                     <label for="description">Mô tả</label>
                                     <textarea class="form-control" id="description" name="description" rows="5"
-                                              placeholder="Nhập mô tả">{{$product->description}}</textarea>
+                                              placeholder="Nhập mô tả">{{ $product->description }}</textarea>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="old_price">Giá sản phẩm</label>
                                     <input type="number" min="0" id="old_price" name="old_price" class="form-control"
-                                           placeholder="Giá sản phẩm" value="{{$product->old_price}}">
+                                           placeholder="Giá sản phẩm" value="{{ $product->old_price }}">
                                 </div>
 
                                 <div class="form-group">
                                     <label for="sale_price">Giá bán sản phẩm</label>
                                     <input type="number" min="0" id="sale_price" name="sale_price" class="form-control"
-                                           placeholder="Giá bán sản phẩm" value="{{$product->sale_price}}">
+                                           placeholder="Giá bán sản phẩm" value="{{ $product->sale_price }}">
                                 </div>
 
                                 <div class="form-group" data-select2-id="5">
                                     <label for="project-overview">Loại sản phẩm</label>
 
                                     <select class="form-control select2 select2-hidden-accessible" name="category_id" data-toggle="select2"
+                                    id='category_id'
                                             data-select2-id="1" tabindex="-1" aria-hidden="true">
-{{--                                        <option data-select2-id="3">Select</option>--}}
                                         @foreach($categories as $category)
-                                            <option value="{{$category->id}}"
-                                                    @if($category->id === $product->category_id) selected @endif>
+                                            <option 
+                                                value="{{$category->id}}"
+                                                @selected($product->category_id == $category->id)
+                                            >
                                                 {{$category->name}}
                                             </option>
                                         @endforeach
@@ -87,79 +89,100 @@
                                     <label>Status</label>
                                     <div class="form-check">
                                         @foreach($listStatus as $key => $status)
-                                            <input class="form-check-input" type="radio" name="status" id="status{{$status->value}}"
-                                                   value="{{$status->value}}"
-                                                   @if ($status->value === $product->status)
-                                                       checked
-                                                   @endif>
-                                            <label class="form-check-label mr-5" for="status{{$status->value}}">
-                                                {{$key}}
+                                            <input 
+                                                class="form-check-input" 
+                                                type="radio" 
+                                                name="status" 
+                                                id="status{{$key}}"
+                                                value="{{$key}}"
+                                                @checked($product->status == $key)
+                                            >
+                                            <label class="form-check-label mr-5" for="status{{$key}}">
+                                                {{$status}}
                                             </label>
                                         @endforeach
                                     </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label id="options">Options</label>
+                                    <table class="table" id="table_options">
+                                        <input type="hidden" id="options_count" value="{{ count($product->options ?? []) }}">
+                                        <thead>
+                                            <tr>
+                                                <th>Key</th>
+                                                <th width='75%'>Values</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($product->options ?? [] as $key => $values)
+                                                <tr>
+                                                    <td>
+                                                        <input type="text" class="form-control options_key" name="options_key[$key]" value="{{ $key }}">
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control options_values" name="options_values[$key][]" multiple>
+                                                            @foreach($values as $value)
+                                                                <option value="{{ $value }}" selected>{{ $value }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th colspan="2">
+                                                    <button type="button" id="btn_add_option" class="btn btn-secondary">
+                                                        Add option
+                                                    </button>
+                                                    <button type="button" id="btn_generate" class="btn btn-primary">
+                                                        Generate
+                                                    </button>
+                                                </th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
                                 </div>
 
                             </div> <!-- end col-->
 
                             <div class="col-xl-6">
                                 <div class="form-group">
-                                    <label>Ảnh sản phẩm</label>
-                                    <div>
+                                    <label for="images">Ảnh sản phẩm</label>
+                                    <input type="file" class="form-control-file" id="images" name="images[]" multiple accept="image/*">
+                                    <div id="preview-container" class="image-preview">
                                         @foreach($product->images as $image)
-                                            <div class="image-preview">
-                                                <img src="{{asset('storage\\').$image->path}}" class="preview-image">
-                                            </div>
+                                            <input type="text" class="d-none" name="old_images[]" value="{{ $image->path }}">
+                                            <img src="{{ asset('storage/'.$image->path) }}">
                                         @endforeach
                                     </div>
-
                                 </div>
                                 <div class="form-group">
-                                    <label for="product_images">Thay đổi ảnh sản phẩm</label>
-                                    <input type="file" class="form-control-file" id="product_images" name="images[]" multiple>
-                                    <div id="preview-container"></div>
-                                </div>
-                                <hr class="" style="width:100%;height:1px;border-width:0;color:gray;background-color:#ddd">
-                                <div class="form-group">
-                                    <label for="single_image">Ảnh đại diện</label>
-                                    <div>
-                                        <div class="image-preview">
-                                            <img src="{{asset('storage\\').$image->path}}" class="preview-image">
-                                        </div>
+                                    <label for="thumb">Ảnh đại diện</label>
+                                    <input type="file" class="form-control-file" id="thumb" name="thumb" accept="image/*">
+                                    <div id="thumb_preview" class="image-preview">
+                                        <img src="{{ asset('storage/'.$product->thumb) }}">
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="single_image">Thay đổi ảnh đại diện</label>
-                                    <input type="file" class="form-control-file" id="single_image" name="thumb">
-                                    <div id="single_image_preview">
-                                    </div>
+                                    <input type="text" class="d-none" name="old_thumb" value="{{ $product->thumb }}">
                                 </div>
                             </div> <!-- end col-->
-                            <hr class="mt-3 mb-3" style="width:100%;height:2px;border-width:0;color:gray;background-color:#ddd">
-                            <div class="container mb-4">
-                                <h4>Thêm các biến thể sản phẩm</h4>
-                                <table class="table">
+                            <div class="container mt-5 mb-5">
+                                <h4>Variants</h4>
+                                <table class="table" id="table_variants">
                                     <thead>
-                                    <tr>
-                                        <th>Key</th>
-                                        <th>Số lượng</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody id="variantsTableBody">
-                                    <!-- Variants will be added here -->
-                                    @foreach($product->variants as $variant)
                                         <tr>
-                                            <td><input type="text" class="form-control" name="keys[]" value="{{$variant->key}}" placeholder="Key"></td>
-                                            <td><input type="number" class="form-control" name="quantities[]" min="0" value="{{$variant->quantity}}" placeholder="0"></td>
+                                            <!-- Đầu bảng sẽ được thêm động -->
                                         </tr>
-                                    @endforeach
+                                    </thead>
+                                    <tbody>
+                                        <!-- Các hàng sẽ được thêm vào đây -->
                                     </tbody>
                                 </table>
-{{--                                <span id="addVariantBtn" class="btn btn-primary">Thêm biến thể</span>--}}
-                                <div class="d-flex justify-content-center">
-                                    <span id="addVariantBtn" class="btn btn-outline-success btn-rounded btn-sm">Thêm </span>
-                                </div>
                             </div>
-                            <input type="submit" class="btn btn-block btn-primary" value="Thêm sản phẩm">
+                            <button class="btn btn-block btn-primary">
+                                Cập nhật sản phẩm
+                            </button>
                         </div>
                     </form>
 
@@ -174,11 +197,14 @@
     <script src="{{asset('js/vendor/dropzone.min.js')}}"></script>
 
     <!-- File upload js -->
-    <script src="{{asset('js/ui/component.fileupload.js')}}"></script>
+    <script src="{{ asset('js/ui/component.fileupload.js')}}"></script>
+    <script src="{{ asset('dists/select2-4.0.13/dist/js/select2.min.js') }}"></script>
+    <script src="{{ asset('dists/jquery.form.js') }}"></script>
+    <script src="{{ asset('dists/notify.min.js') }}"></script>
 
     <script>
-
-        document.getElementById('product_images').addEventListener('change', function(event) {
+        //Preview ảnh
+        document.getElementById('images').addEventListener('change', function(event) {
             const previewContainer = document.getElementById('preview-container');
             previewContainer.innerHTML = ''; // Xóa bất kỳ xem trước nào đã tồn tại trước đó
 
@@ -193,6 +219,7 @@
                     img.src = event.target.result;
                     img.classList.add('preview-image');
                     imagePreview.appendChild(img);
+
                     previewContainer.appendChild(imagePreview);
                 };
 
@@ -202,8 +229,8 @@
             }
         });
 
-        document.getElementById('single_image').addEventListener('change', function(event) {
-            const previewContainer = document.getElementById('single_image_preview');
+        document.getElementById('thumb').addEventListener('change', function(event) {
+            const previewContainer = document.getElementById('thumb_preview');
             previewContainer.innerHTML = ''; // Xóa bất kỳ xem trước nào đã tồn tại trước đó
 
             const file = event.target.files[0];
@@ -225,38 +252,172 @@
             }
         });
 
-        //Xu ly them option
-        function addOption() {
-            var variantsTableBody = document.getElementById('variantsTableBody');
-            var newRow = document.createElement('tr');
-            newRow.innerHTML = `
-                <td><input type="text" class="form-control" name="keys[]" placeholder="Key"></td>
-                <td><input type="number" class="form-control" name="quantities[]" min='0' placeholder="0"></td>
-          `;
-            variantsTableBody.appendChild(newRow);
+        //Add options
+
+        function setSelect2(){
+            $('.options_values').select2({
+                tags: true,
+            });
         }
-        addOption();
-        document.getElementById('addVariantBtn').addEventListener('click', addOption);
+        $(document).ready(function () {
+            $('#form').ajaxForm({
+                beforeSubmit: function(arr, $form, options) { 
+                    console.log(arr, $form, options);
+                    return true;                
+                },
+                success:    function() { 
+                    $.notify("Cập nhật thành công", "success");
+                },
+                error: function(response){
+                    $.notify("Không thành công, vui lòng kiểm tra", "error");
 
+                    $('.error-message').remove();
+
+                    errors = response.responseJSON.errors;
+                    $.each(errors, function(field, messages) {
+                        // nếu field chứa chữ images thì field sẽ thành images
+                        if(field.includes('images')) {
+                            field = 'images';
+                            messages = ['Please select at least 1 image'];
+                        }
+                        
+                        var errorElement = 'error_' + field;
+                        var inputElementId = '#' + field;
+
+                        $(inputElementId).after(`
+                        <div id="${errorElement}" class="error-message alert alert-danger">
+                            ${messages.join(', ')}
+                        </div>`);
+                    });
+                }
+            }); 
+
+            $('#name').on('input', function() {
+                var name = $(this).val();
+                var slug = convertToSlug(name);
+                $('#slug').val(slug);
+            });
+
+            setSelect2();
+            let index = $('#options_count').val();
+            $('#btn_add_option').click(function () {
+                // Tạo phần tử tr và td mới
+                var $tr = $("<tr>");
+                var $keyTd = $("<td>");
+                var $valueTd = $("<td>");
+
+                // Tạo và cấu hình các input
+                var $key = $("<input>").attr({
+                    type: "text",
+                    class: "form-control options_key",
+                    name: `options_key[${index}]`,
+                });
+                var $value = $("<select>").attr({
+                    class: "form-control options_values",
+                    multiple: true,
+                    name: `options_values[${index}][]`,
+                });
+                index++;
+
+                // Gắn các input vào các td
+                $keyTd.append($key);
+                $valueTd.append($value);
+
+                // Gắn các td vào tr
+                $tr.append($keyTd).append($valueTd);
+
+                // Thêm tr vào table
+                $("#table_options tbody").append($tr);
+                setSelect2();
+            });
+
+            $('#btn_generate').click(function() {
+                var options = {}; // Đối tượng để lưu trữ tất cả các options
+
+                // Thu thập tất cả các options từ các input và select
+                $('.options_key').each(function(index) {
+                    var key = $(this).val();
+                    var values = $(this).closest('tr').find('.options_values').val() || [];
+                    options[key] = values;
+                });
+
+                // Tạo tiêu đề cho bảng
+                var $headerRow = $('#table_variants thead tr');
+                $headerRow.empty(); // Làm trống tiêu đề cũ
+                $headerRow.append('<th>Quantity</th>'); // Thêm cột quantity
+                Object.keys(options).forEach(function(key) {
+                    $headerRow.prepend($('<th>').text(key)); // Thêm tiêu đề cột cho mỗi option
+                });
+
+                // Tạo các hàng dựa trên sự kết hợp của các options
+                var productVariants = generateProductVariants(Object.keys(options), options);
+                var $tbody = $('#table_variants tbody');
+                $tbody.empty(); // Làm trống tbody trước khi thêm hàng mới
+                productVariants.forEach(function(variant) {
+                    let variantKey = [];
+                    var $tr = $('<tr>');
+                    let values = Object.keys(variant);
+
+                    values.forEach(function(key, index) {
+                        $tr.prepend($('<td>').text(variant[key]));
+                        variantKey.push(variant[key]);
+
+                        if(index === values.length - 1){
+                            variantKey = variantKey.join('-');
+                            $tr.append($('<td>').append($('<input>').attr({
+                                type: 'number',
+                                name: `variants[${variantKey}]`,
+                                class: 'form-control',
+                                value: '1'
+                            }))); // Cột quantity với input
+                        }
+                    });
+                    $tbody.append($tr);
+                });
+            });
+        });
+
+        function generateProductVariants(optionKeys, options) {
+            var results = [];
+            var currentCombo = {};
+
+            function combineOptions(depth) {
+                if (depth === optionKeys.length) {
+                    results.push({...currentCombo});
+                    return;
+                }
+
+                var optionKey = optionKeys[depth];
+                var values = options[optionKey];
+
+                if (values.length === 0) values = ['']; // Nếu không có giá trị nào, thêm một giá trị rỗng
+
+                values.forEach(function(value) {
+                    currentCombo[optionKey] = value;
+                    combineOptions(depth + 1);
+                });
+            }
+
+            combineOptions(0);
+            return results;
+        }
+        function convertToSlug(str) {
+            // Hàm loại bỏ dấu tiếng Việt
+            str = str.toLowerCase();
+            str = str.replace(/á|à|ả|ã|ạ|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/g, 'a');
+            str = str.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/g, 'e');
+            str = str.replace(/i|í|ì|ỉ|ĩ|ị/g, 'i');
+            str = str.replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/g, 'o');
+            str = str.replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/g, 'u');
+            str = str.replace(/ý|ỳ|ỷ|ỹ|ỵ/g, 'y');
+            str = str.replace(/đ/g, 'd');
+            // Loại bỏ các ký tự đặc biệt
+            str = str.replace(/[^\w\s-]/g, '');
+            // Thay thế khoảng trắng bằng dấu gạch ngang
+            str = str.replace(/\s+/g, '-');
+            // Loại bỏ dấu gạch ngang thừa
+            str = str.replace(/-+/g, '-');
+            return str;
+        }
     </script>
-
-{{--    <script>--}}
-{{--        Dropzone.autoDiscover = false;--}}
-{{--        $(document).ready(function () {--}}
-{{--            // Initialize Dropzone--}}
-{{--            var myDropzone = new Dropzone("#my-dropzone", {--}}
-{{--                url: "{{route('products.store')}}",--}}
-{{--                addRemoveLinks: true,--}}
-{{--                dictRemoveFile: "Remove",--}}
-{{--                dictDefaultMessage: "Drop files here or click to upload",--}}
-{{--                maxFiles: 1// Allow only one file to be uploaded--}}
-{{--            });--}}
-
-{{--            // Event when files are removed--}}
-{{--            myDropzone.on("removedfile", function (file) {--}}
-{{--                // Do something when a file is removed, for example, update your server-side storage--}}
-{{--                console.log("File removed: " + file.name);--}}
-{{--            });--}}
-{{--        });--}}
-{{--    </script>--}}
 @endpush

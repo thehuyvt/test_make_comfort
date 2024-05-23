@@ -5,21 +5,19 @@ enum ProductStatusEnum: int
 {
     case STOP_SELLING = 2;
     case ON_SALE = 1;
+    case DRAFT = 0;
 
     public static function getArrayStatus()
     {
         return [
-            'Mở bán' => self::ON_SALE,
-            'Ngưng bán' => self::STOP_SELLING,
+            self::ON_SALE->value => 'Mở bán',
+            self::STOP_SELLING->value => 'Ngưng bán',
+            self::DRAFT->value => 'Nháp',
         ];
     }
 
-    public static function getNameStatus($value)
+    public static function getNameStatus($key)
     {
-        return array_search($value, [
-            'Ngưng bán' => 2,
-            'Mở bán' => 1,
-
-        ], true);
+        return self::getArrayStatus()[$key];
     }
 }

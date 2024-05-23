@@ -37,11 +37,9 @@ Route::middleware([LoginAdminMiddleware::class])->group(function (){
     Route::group(['prefix' => 'products', 'as'=>'products.'], function (){
         Route::get('', [ProductController::class, 'index'])->name('index');
         Route::get('api', [ProductController::class, 'api'])->name('api');
-        Route::get('show/{productId}', [ProductController::class, 'show'])->name('show');
         Route::get('create', [ProductController::class, 'create'])->name('create');
-        Route::post('store', [ProductController::class, 'store'])->name('store');
-        Route::get('edit/{slug}', [ProductController::class, 'edit'])->name('edit');
-        Route::put('update/{productId}', [ProductController::class, 'update'])->name('update');
+        Route::get('edit/{product:slug}', [ProductController::class, 'edit'])->name('edit');
+        Route::post('update/{product}', [ProductController::class, 'update'])->name('update');
     });
 
     Route::group(['prefix' => 'users', 'as'=>'users.'], function (){

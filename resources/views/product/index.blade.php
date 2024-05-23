@@ -50,7 +50,14 @@
                                 <select class="form-control" name="status">
                                     <option value="">Tất cả</option>
                                     @foreach($listStatus as $key => $status)
-                                        <option value="{{$status->value}}" @if((int)request()->get('status') === $status->value) selected @endif>{{$key}}</option>
+                                        <option 
+                                            value="{{$status}}" 
+                                            @if(request('status') == $status) 
+                                                selected 
+                                            @endif
+                                        >
+                                            {{$key}}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>

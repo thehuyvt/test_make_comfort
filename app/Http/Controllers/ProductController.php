@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -32,37 +33,32 @@ class ProductController extends Controller
     }
     public function index(Request $request)
     {
-//        dd((int)$request->status);
-        $listProducts = $this->model::query();
-        if (!empty($request->category)){
-            $listProducts = $listProducts->where('category_id', $request->category);
-        }
-        if (!empty($request->status)){
-            $listProducts = $listProducts->where('status', $request->status);
-        }
-        if (!empty($request->key)){
-            $listProducts = $listProducts->where('name', 'like', '%'.$request->key.'%')
-                ->orWhere('slug', 'like', '%'.$request->key.'%');
-        }
-        $listProducts = $listProducts->paginate(1);
-//        dd($listProducts);
-        foreach ($listProducts as $product){
-            $product->created_date = $product->dateCreated;
-            $product->category_name = $product->category->name;
-            $product->status = ProductStatusEnum::getNameStatus($product->status);
-        }
-        $listProducts = $listProducts->appends([
-            'category' => $request->category,
-            'status' => $request->status,
-            'key' => $request->key,
-        ]);
+        $listProducts = $this->model::query()
+            ->with([
+                'category',
+            ])
+            ->when($request->category, function ($q,$value){
+                $q->where('category_id', $value);
+            })
+            ->when($request->status, function ($q,$value){
+                $q->where('status', $value);
+            })
+            ->when($request->status, function ($q,$value){
+                $q->where(function($q) use ($value){
+                    $q->orWhere('name', 'like', '%'.$value.'%');
+                    $q->orWhere('slug', 'like', '%'.$value.'%');
+                });
+            })
+            ->paginate(1);
+
+        $listProducts = $listProducts->appends($request->all());
         $categories = Category::query()->get();
         $listStatus = ProductStatusEnum::getArrayStatus();
-//        dd($listStatus['Mở bán']->value);
+
         return view('product.index',[
             'listProducts' => $listProducts,
-            'categories'=>$categories,
-            'listStatus'=>$listStatus,
+            'categories'=> $categories,
+            'listStatus'=> $listStatus,
         ]);
     }
 
@@ -71,13 +67,13 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $categories = Category::query()->get();
-        $listStatus = ProductStatusEnum::getArrayStatus();
-//        dd($listStatus);
-        return view('product.create',[
-            'categories'=>$categories,
-            'listStatus'=>$listStatus,
-        ]);
+        $product = new $this->model;
+        $product->status = ProductStatusEnum::DRAFT;
+        $product->name = 'Draft '.time();
+        $product->slug = Str::random();
+        $product->save();
+
+        return redirect()->route('products.edit', $product);
     }
 
     public function api(){
@@ -107,20 +103,24 @@ class ProductController extends Controller
             ->make(true);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreProductRequest $request)
+    public function update(StoreProductRequest $request, Product $product)
     {
+        $options = [];
+        foreach($request->options_key as $index => $key){
+            $options[$key] = $request->options_values[$index];
+        }
+        $product->options = $options;
+        $product->fill($request->all());
 
-        $this->model::query()->create($request->validated());
-        $product = $this->model::query()->where('slug', $request->slug)->first();
-        $path = Storage::disk('public')->putFile('uploads/'.$product->id.'/thumb', $request->file('thumb'));
-        $product->update([
-            'thumb' => $path,
-        ]);
-        //product_images
-        $listImages = $request->images;
+        if($request->thumb){
+            $path = Storage::disk('public')->putFile('uploads/'.$product->id.'/thumb', $request->file('thumb'));
+            $product->thumb = $path;
+        } else {
+            $product->thumb = $request->old_thumb;
+        }
+
+        // product_images
+        $listImages = array_filter_empty($request->images);
         foreach ($listImages as $image){
             $path = Storage::disk('public')->putFile('uploads/'.$product->id.'/images', $image);
             $product->images()->create([
@@ -129,95 +129,31 @@ class ProductController extends Controller
         }
 
         //product_variants
-        $options = $request->options;
-//        dd($options);
-        foreach ($options as $key => $quantity){
+        $variants = $request->variants;
+        foreach ($variants as $key => $quantity){
             $product->variants()->create([
                 'key' => $key,
                 'quantity' => $quantity,
             ]);
         }
 
-        return redirect()->route('products.index')->with('success', 'Thêm sản phẩm thành công!');
-    }
+        $product->save();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Product $product)
-    {
-        return view('product.edit');
+        return true;
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($slug)
+    public function edit(Product $product)
     {
-        $product = $this->model::query()->where('slug', $slug)->first();
         $categories = Category::query()->get();
         $listStatus = ProductStatusEnum::getArrayStatus();
+
         return view('product.edit', [
             'product' => $product,
-            'categories'=>$categories,
-            'listStatus'=>$listStatus,
+            'categories'=> $categories,
+            'listStatus'=> $listStatus,
         ]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateProductRequest $request, $productId)
-    {
-        $product = $this->model::query()->find($productId);
-        $product->update($request->validated());
-        //Update product_thumb
-        if (!empty($request->thumb)){
-            Storage::deleteDirectory('public/uploads/'.$product->id.'/thumb');
-            $path = Storage::disk('public')->putFile('uploads/'.$product->id.'/thumb', $request->thumb);
-            $product->update([
-                'thumb' => $path,
-            ]);
-        }
-
-        //product_images
-        if (!empty($request->images)){
-            $listImages = $request->images;
-            $product->images()->delete();
-            Storage::deleteDirectory('public/uploads/'.$product->id.'/images');
-            foreach ($listImages as $image){
-                $path = Storage::disk('public')->putFile('uploads/'.$product->id.'/images', $image);
-                $product->images()->create([
-                    'path' => $path,
-                ]);
-            }
-        }
-
-        //Update variants
-        $product->variants()->delete();
-        $listVariants = [];
-        $length =  count($request->keys);
-        for ($i = 0; $i < $length; $i++){
-            if (!empty($request->keys[$i])){
-                $listVariants[$i]['key'] = $request->keys[$i];
-                if ($request->quantities[$i] === null){
-                    $listVariants[$i]['quantity'] = 0;
-                }else{
-                    $listVariants[$i]['quantity'] = $request->quantities[$i];
-                }
-            }
-        }
-        $product->variants()->createMany($listVariants);
-
-        return redirect()->route('products.index')
-            ->with('success', 'Cập nhật sản phẩm thành công!');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Product $product)
-    {
-        //
     }
 }

@@ -11,26 +11,13 @@ use Illuminate\Validation\Rule;
 
 class StoreProductRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
             'slug' => [
                 'required',
                 'string',
-                Rule::unique(Product::class)->ignore($this->productId),
+                Rule::unique(Product::class)->ignore($this->product),
             ],
             'name' => [
                 'required',
@@ -43,11 +30,11 @@ class StoreProductRequest extends FormRequest
             'old_price' => [
                 'required',
                 'integer',
-                'min:0',
+                'min:1',
             ],
             'sale_price' => [
                 'integer',
-                'min:0',
+                'min:1',
             ],
             'category_id' => [
                 'required',
@@ -55,20 +42,27 @@ class StoreProductRequest extends FormRequest
             ],
             'status' => [
                 'required',
-                Rule::in(ProductStatusEnum::getArrayStatus()),
+                Rule::in(ProductStatusEnum::cases()),
             ],
             'thumb' => [
-                'required',
+                'nullable',
                 'image',
+                Rule::requiredIf(! $this->old_thumb),
             ],
+
+            // relations
             'images' => [
                 'nullable',
                 'array',
+                Rule::requiredIf(! $this->old_images),
             ],
-            'images.*' => [
-                'image',
+            'variants' => [
+                'required',
+                'array',
             ],
-
+            'variants.*' => [
+                'integer',
+            ],
         ];
     }
 }
