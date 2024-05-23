@@ -44,13 +44,18 @@ class ProductController extends Controller
             $listProducts = $listProducts->where('name', 'like', '%'.$request->key.'%')
                 ->orWhere('slug', 'like', '%'.$request->key.'%');
         }
-        $listProducts = $listProducts->paginate(10);
+        $listProducts = $listProducts->paginate(1);
 //        dd($listProducts);
         foreach ($listProducts as $product){
             $product->created_date = $product->dateCreated;
             $product->category_name = $product->category->name;
             $product->status = ProductStatusEnum::getNameStatus($product->status);
         }
+        $listProducts = $listProducts->appends([
+            'category' => $request->category,
+            'status' => $request->status,
+            'key' => $request->key,
+        ]);
         $categories = Category::query()->get();
         $listStatus = ProductStatusEnum::getArrayStatus();
 //        dd($listStatus['Mở bán']->value);
