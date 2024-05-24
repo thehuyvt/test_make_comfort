@@ -50,13 +50,11 @@
                                 <select class="form-control" name="status">
                                     <option value="">Tất cả</option>
                                     @foreach($listStatus as $key => $status)
-                                        <option 
-                                            value="{{$status}}" 
-                                            @if(request('status') == $status) 
-                                                selected 
-                                            @endif
+                                        <option
+                                            value="{{$key}}"
+                                            @selected(request('status') == $key)
                                         >
-                                            {{$key}}
+                                            {{$status}}
                                         </option>
                                     @endforeach
                                 </select>
@@ -98,8 +96,8 @@
                                     <br>
                                 </td>
                                 <td class="sorting_1">{{$product->name}}</td>
-                                <td>{{$product->category_name}}</td>
-                                <td>{{$product->created_date}}</td>
+                                <td>{{$product->category->name}}</td>
+                                <td>{{$product->created_at}}</td>
                                 <td>{{$product->sale_price}}</td>
                                 <td>{{$product->status}}</td>
                                 <td>

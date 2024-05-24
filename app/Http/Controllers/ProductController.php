@@ -54,7 +54,6 @@ class ProductController extends Controller
         $listProducts = $listProducts->appends($request->all());
         $categories = Category::query()->get();
         $listStatus = ProductStatusEnum::getArrayStatus();
-
         return view('product.index',[
             'listProducts' => $listProducts,
             'categories'=> $categories,
@@ -105,6 +104,7 @@ class ProductController extends Controller
 
     public function update(StoreProductRequest $request, Product $product)
     {
+//        dd($request->all());
         $options = [];
         foreach($request->options_key as $index => $key){
             $options[$key] = $request->options_values[$index];
@@ -149,11 +149,13 @@ class ProductController extends Controller
     {
         $categories = Category::query()->get();
         $listStatus = ProductStatusEnum::getArrayStatus();
-
+        $listVariants = $product->variants;
+//        dd($listVariants);
         return view('product.edit', [
             'product' => $product,
             'categories'=> $categories,
             'listStatus'=> $listStatus,
+            'listVariants'=> $listVariants,
         ]);
     }
 }

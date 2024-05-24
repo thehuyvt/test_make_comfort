@@ -74,7 +74,7 @@
                                     id='category_id'
                                             data-select2-id="1" tabindex="-1" aria-hidden="true">
                                         @foreach($categories as $category)
-                                            <option 
+                                            <option
                                                 value="{{$category->id}}"
                                                 @selected($product->category_id == $category->id)
                                             >
@@ -89,10 +89,10 @@
                                     <label>Status</label>
                                     <div class="form-check">
                                         @foreach($listStatus as $key => $status)
-                                            <input 
-                                                class="form-check-input" 
-                                                type="radio" 
-                                                name="status" 
+                                            <input
+                                                class="form-check-input"
+                                                type="radio"
+                                                name="status"
                                                 id="status{{$key}}"
                                                 value="{{$key}}"
                                                 @checked($product->status == $key)
@@ -118,10 +118,10 @@
                                             @foreach($product->options ?? [] as $key => $values)
                                                 <tr>
                                                     <td>
-                                                        <input type="text" class="form-control options_key" name="options_key[$key]" value="{{ $key }}">
+                                                        <input type="text" class="form-control options_key" name="options_key[{{$key}}]" value="{{ $key }}">
                                                     </td>
                                                     <td>
-                                                        <select class="form-control options_values" name="options_values[$key][]" multiple>
+                                                        <select class="form-control options_values" name="options_values[{{$key}}][]" multiple>
                                                             @foreach($values as $value)
                                                                 <option value="{{ $value }}" selected>{{ $value }}</option>
                                                             @endforeach
@@ -261,11 +261,11 @@
         }
         $(document).ready(function () {
             $('#form').ajaxForm({
-                beforeSubmit: function(arr, $form, options) { 
+                beforeSubmit: function(arr, $form, options) {
                     console.log(arr, $form, options);
-                    return true;                
+                    return true;
                 },
-                success:    function() { 
+                success:    function() {
                     $.notify("Cập nhật thành công", "success");
                 },
                 error: function(response){
@@ -280,7 +280,7 @@
                             field = 'images';
                             messages = ['Please select at least 1 image'];
                         }
-                        
+
                         var errorElement = 'error_' + field;
                         var inputElementId = '#' + field;
 
@@ -290,7 +290,7 @@
                         </div>`);
                     });
                 }
-            }); 
+            });
 
             $('#name').on('input', function() {
                 var name = $(this).val();
@@ -330,7 +330,7 @@
                 $("#table_options tbody").append($tr);
                 setSelect2();
             });
-
+            //nếu khi bấm nút generate thì sẽ tạo ra b
             $('#btn_generate').click(function() {
                 var options = {}; // Đối tượng để lưu trữ tất cả các options
 
@@ -364,12 +364,26 @@
 
                         if(index === values.length - 1){
                             variantKey = variantKey.join('-');
-                            $tr.append($('<td>').append($('<input>').attr({
-                                type: 'number',
-                                name: `variants[${variantKey}]`,
-                                class: 'form-control',
-                                value: '1'
-                            }))); // Cột quantity với input
+                            let check = true;
+                            @foreach($listVariants as $variant)
+                                if(variantKey === '{{$variant->key}}') {
+                                    $tr.append($('<td>').append($('<input>').attr({
+                                        type: 'number',
+                                        name: `variants[${variantKey}]`,
+                                        class: 'form-control',
+                                        value: '{{$variant->quantity}}'
+                                    })));// Cột quantity với input
+                                    check = false;
+                                }
+                            @endforeach
+                            if (check) {
+                                $tr.append($('<td>').append($('<input>').attr({
+                                    type: 'number',
+                                    name: `variants[${variantKey}]`,
+                                    class: 'form-control',
+                                    value: '1'
+                                })));// Cột quantity với input
+                            }
                         }
                     });
                     $tbody.append($tr);

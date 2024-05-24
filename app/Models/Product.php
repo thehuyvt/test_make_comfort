@@ -24,7 +24,7 @@ class Product extends Model
         'status',
         'options',
     ];
-    protected $cast = [  
+    protected $cast = [
         'created_at' => 'datetime:d/m/Y',
     ];
 
@@ -51,7 +51,7 @@ class Product extends Model
     protected function options(): Attribute
     {
         return Attribute::make(
-            get: fn (string $value) => json_decode($value, true),
+            get: fn (?string $value) => $value !== null ? json_decode($value, true) : [],
             set: fn (array $value) => json_encode($value),
         );
     }
