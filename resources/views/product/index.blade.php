@@ -96,7 +96,7 @@
                                     <br>
                                 </td>
                                 <td class="sorting_1">{{$product->name}}</td>
-                                <td>{{$product->category->name}}</td>
+                                <td>{{$product->category?->name}}</td>
                                 <td>{{$product->created_at}}</td>
                                 <td>{{$product->sale_price}}</td>
                                 <td>{{$product->status}}</td>

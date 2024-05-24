@@ -72,9 +72,4 @@ class CustomerController extends Controller
     {
         //
     }
-
-    public function cart()
-    {
-        echo 'Cart';
-    }
 }

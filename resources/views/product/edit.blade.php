@@ -118,7 +118,9 @@
                                             @foreach($product->options ?? [] as $key => $values)
                                                 <tr>
                                                     <td>
-                                                        <input type="text" class="form-control options_key" name="options_key[{{$key}}]" value="{{ $key }}">
+                                                        <select class="form-control options_key" name="options_key[{{$key}}]">
+                                                            <option selected>{{ $key }}</option>
+                                                        </select>
                                                     </td>
                                                     <td>
                                                         <select class="form-control options_values" name="options_values[{{$key}}][]" multiple>
@@ -172,11 +174,23 @@
                                 <table class="table" id="table_variants">
                                     <thead>
                                         <tr>
-                                            <!-- Đầu bảng sẽ được thêm động -->
+                                            @foreach($product->options as $key => $values)
+                                                <th>{{ $key }}</th>
+                                            @endforeach
+                                            <th>Quantity</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <!-- Các hàng sẽ được thêm vào đây -->
+                                        @foreach($product->variants as $variant)
+                                            <tr>
+                                                @foreach(explode('-', $variant->key) as $value)
+                                                    <td>{{ $value }}</td>
+                                                @endforeach
+                                                <td>
+                                                    <input type="number" class="form-control" name="variants[{{ $variant->key }}]" value="{{ $variant->quantity }}">
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -257,6 +271,32 @@
         function setSelect2(){
             $('.options_values').select2({
                 tags: true,
+            });
+            $('.options_key').select2({
+                tags: true,
+                ajax: {
+                    delay: 250,
+                    cache: true,
+                    minimumInputLength: 1,
+                    url: '{{ route('products.search-options') }}',
+                    dataType: 'json',
+                    data: function (params) {
+                        return {
+                            key: params.term,
+                            category_id: $('#category_id').val(),
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    text: item,
+                                    id: item
+                                }
+                            })
+                        };
+                    },
+                }
             });
         }
         $(document).ready(function () {
@@ -364,26 +404,12 @@
 
                         if(index === values.length - 1){
                             variantKey = variantKey.join('-');
-                            let check = true;
-                            @foreach($listVariants as $variant)
-                                if(variantKey === '{{$variant->key}}') {
-                                    $tr.append($('<td>').append($('<input>').attr({
-                                        type: 'number',
-                                        name: `variants[${variantKey}]`,
-                                        class: 'form-control',
-                                        value: '{{$variant->quantity}}'
-                                    })));// Cột quantity với input
-                                    check = false;
-                                }
-                            @endforeach
-                            if (check) {
-                                $tr.append($('<td>').append($('<input>').attr({
-                                    type: 'number',
-                                    name: `variants[${variantKey}]`,
-                                    class: 'form-control',
-                                    value: '1'
-                                })));// Cột quantity với input
-                            }
+                            $tr.append($('<td>').append($('<input>').attr({
+                                type: 'number',
+                                name: `variants[${variantKey}]`,
+                                class: 'form-control',
+                                value: '1'
+                            })));// Cột quantity với input
                         }
                     });
                     $tbody.append($tr);

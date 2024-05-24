@@ -288,6 +288,7 @@
 
 <!--===============================================================================================-->
 	<script src="{{asset('customer/vendor/jquery/jquery-3.2.1.min.js')}}"></script>
+    <script src="{{ asset('dists/notify.min.js') }}"></script>
 <!--===============================================================================================-->
 	<script src="{{asset('customer/vendor/animsition/js/animsition.min.js')}}"></script>
 <!--===============================================================================================-->
@@ -303,30 +304,6 @@
 			});
 		})
 	</script>
-<!--===============================================================================================-->
-	<script src="{{asset('customer/vendor/daterangepicker/moment.min.js')}}"></script>
-	<script src="{{asset('customer/vendor/daterangepicker/daterangepicker.js')}}"></script>
-<!--===============================================================================================-->
-    <script>
-        $('.js-show-modal1').click(function(e) {
-            e.preventDefault();
-            var productSlug = $(this).data('product-slug');
-            console.log(productSlug);// Giả sử bạn có data-product-slug để lưu slug sản phẩm
-            $.ajax({
-                type: 'GET',
-                url: '/product/' + productSlug,
-                success: function(response) {
-                    // Đổ dữ liệu sản phẩm vào modal
-                    var product = response.product;
-                    var path = "http://make_comfort.test/storage/";
-                    $("#first-image").attr('data-thumb', path + product.thumb);
-                },
-                error: function(xhr, status, error) {
-                    console.error(error);
-                }
-            });
-        });
-    </script>
     <script src="{{asset('customer/vendor/slick/slick.min.js')}}"></script>
 	<script src="{{asset('customer/js/slick-custom.js')}}"></script>
 <!--===============================================================================================-->
@@ -353,6 +330,11 @@
 <!--===============================================================================================-->
 	<script src="{{asset('customer/vendor/sweetalert/sweetalert.min.js')}}"></script>
 	<script>
+		$(document).ready(function(){
+			@if(session('error'))
+				swal("Error", "{{session('error')}}", "error");
+			@endif
+		});
 		$('.js-addwish-b2').on('click', function(e){
 			e.preventDefault();
 		});

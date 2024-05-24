@@ -149,13 +149,33 @@ class ProductController extends Controller
     {
         $categories = Category::query()->get();
         $listStatus = ProductStatusEnum::getArrayStatus();
-        $listVariants = $product->variants;
-//        dd($listVariants);
+
         return view('product.edit', [
             'product' => $product,
             'categories'=> $categories,
             'listStatus'=> $listStatus,
-            'listVariants'=> $listVariants,
         ]);
+    }
+
+    public function searchOptions(Request $request)
+    {
+        $category_id = $request->category_id;
+        $key = $request->key;
+
+        $data = $this->model
+            ->where('category_id', $category_id)
+            ->distinct()
+            ->get('options');
+
+        $options = [];
+        foreach($data as $each){
+            foreach($each->options as $index => $val){
+                if(str_contains($index, $key)){
+                    $options[] = $index;
+                }
+            }
+        }
+
+        return $options;
     }
 }
