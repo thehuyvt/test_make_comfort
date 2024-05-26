@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Customer;
 
 use App\Enums\OrderStatusEnum;
+use App\Http\Controllers\Controller;
+use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use Illuminate\Http\Request;
-use App\Models\Customer;
 
 class CartController extends Controller
 {
@@ -16,17 +17,19 @@ class CartController extends Controller
         $variantKey = implode('-', $request->input('options'));
         $quantity = $request->input('quantity');
 
+        session()->put('variant', $variantKey);
+
         $productVariant = ProductVariant::query()
             ->where('key', $variantKey)
             ->where('product_id', $product->id)
             ->first();
 
         if(!$productVariant) {
-            return redirect()->back()->with('error', 'Options not found');
+            return redirect()->back()->with('error', 'Không tìm thấy option.');
         }
 
         if($quantity > $productVariant->quantity) {
-            return redirect()->back()->with('error', 'Quantity not available');
+            return redirect()->back()->with('error', 'Số lượng trong kho không đủ.');
         }
 
         $customerId = session()->get('customer_id');
@@ -68,13 +71,13 @@ class CartController extends Controller
                 ]);
             }
 
-            $order->total = $product->sale_price * $quantity;
+            $order->total += $product->sale_price * $quantity;
             $order->save();
         }
 
-        $productVariant->quantity = $productVariant->quantity - $quantity;
+        $productVariant->quantity -= $quantity;
         $productVariant->save();
 
-        return redirect()->back()->with('success', 'Product added to cart');
+        return redirect()->back()->with('success', 'Thêm sản phẩm vào giỏ hàng thành công.');
     }
 }

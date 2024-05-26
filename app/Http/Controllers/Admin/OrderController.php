@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\Models\ProductImage;
-use App\Http\Requests\StoreProductImageRequest;
-use App\Http\Requests\UpdateProductImageRequest;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreOrderRequest;
+use App\Http\Requests\UpdateOrderRequest;
+use App\Models\Order;
 
-class ProductImageController extends Controller
+class OrderController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +28,7 @@ class ProductImageController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreProductImageRequest $request)
+    public function store(StoreOrderRequest $request)
     {
         //
     }
@@ -35,7 +36,7 @@ class ProductImageController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ProductImage $productImage)
+    public function show(Order $order)
     {
         //
     }
@@ -43,7 +44,7 @@ class ProductImageController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(ProductImage $productImage)
+    public function edit(Order $order)
     {
         //
     }
@@ -51,7 +52,7 @@ class ProductImageController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProductImageRequest $request, ProductImage $productImage)
+    public function update(UpdateOrderRequest $request, Order $order)
     {
         //
     }
@@ -59,7 +60,7 @@ class ProductImageController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ProductImage $productImage)
+    public function destroy(Order $order)
     {
         //
     }

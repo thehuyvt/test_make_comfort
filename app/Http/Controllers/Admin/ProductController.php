@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Enums\ProductStatusEnum;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreProductRequest;
 use App\Models\Category;
 use App\Models\Product;
-use App\Http\Requests\StoreProductRequest;
-use App\Http\Requests\UpdateProductRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
-use Yajra\DataTables\DataTables;
 use Illuminate\Support\Str;
+use Yajra\DataTables\DataTables;
 
 class ProductController extends Controller
 {
@@ -47,10 +47,13 @@ class ProductController extends Controller
                 $q->where(function($q) use ($value){
                     $q->orWhere('name', 'like', '%'.$value.'%');
                     $q->orWhere('slug', 'like', '%'.$value.'%');
+                    $q->orWhere('id', 'like', '%'.$value.'%');
                 });
             })
             ->paginate(1);
-
+        foreach ($listProducts as $product){
+            $product->status = ProductStatusEnum::getNameStatus($product->status);
+        }
         $listProducts = $listProducts->appends($request->all());
         $categories = Category::query()->get();
         $listStatus = ProductStatusEnum::getArrayStatus();
@@ -75,36 +78,9 @@ class ProductController extends Controller
         return redirect()->route('products.edit', $product);
     }
 
-    public function api(){
-        return DataTables::of($this->model->with('category'))
-            ->addColumn('category_name', function ($object){
-                return $object->category->name;
-            })
-            ->addColumn('product', function ($object){
-                $arr = [];
-                $arr['id'] = $object->id;
-                $arr['image'] = $object->thumb;
-                $arr['name'] = $object->name;
-                return $arr;
-            })
-            ->addColumn('action', function ($object) {
-                $arr = [];
-                $arr['edit'] = route('products.edit', $object);
-                $arr['show'] = route('products.show', $object);
-                return $arr;
-            })
-            ->editColumn('status', function ($object){
-                return ProductStatusEnum::getNameStatus($object->status);
-            })
-            ->editColumn('created_at', function ($object){
-                return $object->dateCreated;
-            })
-            ->make(true);
-    }
 
     public function update(StoreProductRequest $request, Product $product)
     {
-//        dd($request->all());
         $options = [];
         foreach($request->options_key as $index => $key){
             $options[$key] = $request->options_values[$index];
@@ -129,6 +105,8 @@ class ProductController extends Controller
         }
 
         //product_variants
+        $product->variants()->delete();
+
         $variants = $request->variants;
         foreach ($variants as $key => $quantity){
             $product->variants()->create([

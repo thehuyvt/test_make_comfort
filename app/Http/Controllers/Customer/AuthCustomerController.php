@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Customer;
 
 use App\Enums\GenderEnum;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\Customer;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 
 class AuthCustomerController extends Controller
@@ -61,7 +62,7 @@ class AuthCustomerController extends Controller
             session()->put('customer_email', $customer->email);
             session()->put('customer_address', $customer->address);
             session()->put('customer_phone_number', $customer->phone_number);
-            return redirect()->route('customers.index');
+            return redirect($request->url ?? URL::route('customers.index'));
         }else{
             return redirect()->route('auth-customer.login')
                 ->with('message', 'Email hoặc mật khẩu của bạn không chính xác!');

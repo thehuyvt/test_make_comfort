@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Customer;
 
-use App\Models\Category;
-use App\Models\Customer;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
+use App\Models\Category;
+use App\Models\Customer;
 use App\Models\Product;
+use Illuminate\Support\Facades\URL;
 
 class CustomerController extends Controller
 {
@@ -49,11 +51,25 @@ class CustomerController extends Controller
     public function productDetail($slug)
     {
         $product = Product::query()->where('slug', $slug)->firstOrFail();
+        if ($product->sale_price < $product->old_price) {
+            $product->sale_off = round(($product->old_price - $product->sale_price) / $product->old_price * 100);
+        }else{
+            $product->sale_off = null;
+        }
         $product->sale_price = number_format($product->sale_price);
         $product->old_price = number_format($product->old_price);
 
+        $relatedProducts = Product::query()
+            ->where('category_id', $product->category_id)
+            ->where('id', $product->id)
+            ->limit(16)->get();
+        foreach ($relatedProducts as $product){
+            $product->sale_price = number_format($product->sale_price);
+            $product->old_price = number_format($product->old_price);
+        }
         return view('customer.product.detail', [
             'product'=>$product,
+            'relatedProducts' => $relatedProducts,
         ]);
     }
 
