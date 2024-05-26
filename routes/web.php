@@ -1,13 +1,15 @@
 <?php
 
-use App\Http\Controllers\AuthAdminController;
-use App\Http\Controllers\AuthCustomerController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\Admin\AuthAdminController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Customer\AuthCustomerController;
+use App\Http\Controllers\Customer\CartController;
+use App\Http\Controllers\Customer\CustomerController;
 use App\Http\Middleware\LoginAdminMiddleware;
 use App\Http\Middleware\LoginCustomerMiddleware;
+use App\Http\Middleware\RevalidateBackHistory;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,7 +23,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware([LoginAdminMiddleware::class])->group(function (){
+Route::middleware([LoginAdminMiddleware::class, RevalidateBackHistory::class])->group(function (){
     Route::get('dashboard', [AuthAdminController::class, 'dashboard'])->name('dashboard');
 
     Route::get('logout-admin', [AuthAdminController::class, 'logout'])->name('admin.logout');
@@ -40,6 +42,7 @@ Route::middleware([LoginAdminMiddleware::class])->group(function (){
         Route::get('create', [ProductController::class, 'create'])->name('create');
         Route::get('edit/{product:slug}', [ProductController::class, 'edit'])->name('edit');
         Route::post('update/{product}', [ProductController::class, 'update'])->name('update');
+        Route::get('search-options', [ProductController::class, 'searchOptions'])->name('search-options');
     });
 
     Route::group(['prefix' => 'users', 'as'=>'users.'], function (){
@@ -62,10 +65,11 @@ Route::get('login', [AuthCustomerController::class, 'login'])->name('customers.l
 Route::post('login', [AuthCustomerController::class, 'processLogin'])->name('customers.process-login');
 
 //Customer Middleware
-Route::middleware([LoginCustomerMiddleware::class])->group(function (){
+Route::middleware([LoginCustomerMiddleware::class, RevalidateBackHistory::class])->group(function (){
     Route::get('profile', [AuthCustomerController::class, 'profile'])->name('customers.profile');
     Route::get('logout', [AuthCustomerController::class, 'logout'])->name('customers.logout');
     Route::get('cart', [CustomerController::class, 'cart'])->name('customers.cart');
+    Route::post('add-cart/{product}', [CartController::class, 'update'])->name('carts.update');
 });
 
 //Guest
