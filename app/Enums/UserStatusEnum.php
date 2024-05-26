@@ -9,17 +9,13 @@ enum UserStatusEnum: int
     public static function getArrayStatus()
     {
         return [
-            'Hoạt động' => self::ACTIVE,
-            'Dừng hoạt động' => self::STOP_ACTIVE,
+            self::ACTIVE->value => 'Hoạt động',
+            self::ACTIVE->value => 'Dừng hoạt động',
         ];
     }
 
     public static function getNameStatus($value)
     {
-        return array_search($value, [
-            'Dừng hoạt động' => 0,
-            'Hoạt động' => 1,
-
-        ], true);
+        return self::getArrayStatus()[$value];
     }
 }

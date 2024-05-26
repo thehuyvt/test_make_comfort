@@ -10,8 +10,8 @@ enum ProductStatusEnum: int
     public static function getArrayStatus()
     {
         return [
-            self::ON_SALE->value => 'Mở bán',
-            self::STOP_SELLING->value => 'Ngưng bán',
+            self::ON_SALE->value => 'Đang bán',
+            self::STOP_SELLING->value => 'Dừng bán',
             self::DRAFT->value => 'Nháp',
         ];
     }

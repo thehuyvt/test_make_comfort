@@ -14,27 +14,18 @@ enum OrderStatusEnum: int
     public static function getArrayStatus()
     {
         return [
-            'Giỏ hàng' => self::DRAFT,
-            'Đang đặt' => self::ORDERING,
-            'Chờ xác nhận' => self::PENDING,
-            'Đang xử lý' => self::PROCESSING,
-            'Tạm dừng' => self::ON_HOLD,
-            'Đã hủy' => self::CANCELLED,
-            'Đã giao ĐVVC' => self::SHIPPED,
+            self::DRAFT->value => "Giỏ hàng",
+            self::ORDERING->value => "Đang thanh toán",
+            self::PENDING->value => "Chờ xử lý",
+            self::PROCESSING->value => "Đã xử lý",
+            self::ON_HOLD->value => "Tạm dừng",
+            self::CANCELLED->value => "Đã hủy",
+            self::SHIPPED->value => "Shipped",
         ];
     }
 
     public static function getNameStatus($value)
     {
-        return array_search($value, [
-            'Giỏ hàng' => 1,
-            'Đang đặt' => 2,
-            'Chờ xác nhận' => 3,
-            'Đang xử lý' => 4,
-            'Tạm dừng' => 5,
-            'Đã hủy' => 6,
-            'Đã giao ĐVVC' => 7,
-
-        ], true);
+        return self::getArrayStatus()[$value];
     }
 }

@@ -9,16 +9,14 @@ enum GenderEnum: int
     public static function getArrayGender()
     {
         return [
-            'Nam' => self::MALE,
-            'Nữ' => self::FE_MALE,
+            self::MALE->value => 'Male',
+            self::FE_MALE->value => 'Female',
+
         ];
     }
 
-    public static function getNameGender($value)
+    public static function getNameGender($key)
     {
-        return array_search($value, [
-            'Nữ' => 0,
-            'Nam' => 1,
-        ], true);
+        return self::getArrayGender()[$key];
     }
 }
