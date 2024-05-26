@@ -50,19 +50,19 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="description">Mô tả</label>
+                                    <label for="description">Mô tả sản phẩm</label>
                                     <textarea class="form-control" id="description" name="description" rows="5"
                                               placeholder="Nhập mô tả">{{ $product->description }}</textarea>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="old_price">Giá sản phẩm</label>
+                                    <label for="old_price">Giá cũ sản phẩm</label>
                                     <input type="number" min="0" id="old_price" name="old_price" class="form-control"
                                            placeholder="Giá sản phẩm" value="{{ $product->old_price }}">
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="sale_price">Giá bán sản phẩm</label>
+                                    <label for="sale_price">Giá bán</label>
                                     <input type="number" min="0" id="sale_price" name="sale_price" class="form-control"
                                            placeholder="Giá bán sản phẩm" value="{{ $product->sale_price }}">
                                 </div>
@@ -71,8 +71,7 @@
                                     <label for="project-overview">Loại sản phẩm</label>
 
                                     <select class="form-control select2 select2-hidden-accessible" name="category_id" data-toggle="select2"
-                                    id='category_id'
-                                            data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                    id='category_id' data-select2-id="1" tabindex="-1" aria-hidden="true">
                                         @foreach($categories as $category)
                                             <option
                                                 value="{{$category->id}}"
@@ -86,7 +85,7 @@
 
                                 <!-- Status -->
                                 <div class="form-group">
-                                    <label>Status</label>
+                                    <label>Trạng thái</label>
                                     <div class="form-check">
                                         @foreach($listStatus as $key => $status)
                                             <input
@@ -111,7 +110,7 @@
                                         <thead>
                                             <tr>
                                                 <th>Key</th>
-                                                <th width='75%'>Values</th>
+                                                <th width='75%'>Options</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -161,10 +160,12 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="thumb">Ảnh đại diện</label>
+                                    <label for="thumb">Ảnh chính</label>
                                     <input type="file" class="form-control-file" id="thumb" name="thumb" accept="image/*">
                                     <div id="thumb_preview" class="image-preview">
-                                        <img src="{{ asset('storage/'.$product->thumb) }}">
+                                        @if($product->thumb)
+                                            <img src="{{ asset('storage/'.$product->thumb) }}">
+                                        @endif
                                     </div>
                                     <input type="text" class="d-none" name="old_thumb" value="{{ $product->thumb }}">
                                 </div>
@@ -173,12 +174,15 @@
                                 <h4>Variants</h4>
                                 <table class="table" id="table_variants">
                                     <thead>
-                                        <tr>
+                                    <tr>
+                                        @if($product->options)
                                             @foreach($product->options as $key => $values)
                                                 <th>{{ $key }}</th>
                                             @endforeach
-                                            <th>Quantity</th>
-                                        </tr>
+                                            <th>Số lượng</th>
+                                        @endif
+                                    </tr>
+
                                     </thead>
                                     <tbody>
                                         @foreach($product->variants as $variant)
@@ -384,7 +388,7 @@
                 // Tạo tiêu đề cho bảng
                 var $headerRow = $('#table_variants thead tr');
                 $headerRow.empty(); // Làm trống tiêu đề cũ
-                $headerRow.append('<th>Quantity</th>'); // Thêm cột quantity
+                $headerRow.append('<th>Số lượng</th>'); // Thêm cột quantity
                 Object.keys(options).forEach(function(key) {
                     $headerRow.prepend($('<th>').text(key)); // Thêm tiêu đề cột cho mỗi option
                 });

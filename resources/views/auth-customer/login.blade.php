@@ -74,6 +74,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <input type="hidden" name="url" value="{{url()->previous()}}">
 
                             <div class="form-group mb-3">
                                 <div class="custom-control custom-checkbox">

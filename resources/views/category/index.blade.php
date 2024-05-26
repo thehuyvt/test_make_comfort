@@ -1,15 +1,15 @@
 @extends('layout.master')
 
 @section('content')
-    <a href="{{route('categories.create')}}" class="btn btn-success btn-rounded">Thêm loại sản phẩm</a>
+    <a href="{{route('categories.create')}}" class="btn btn-success btn-rounded">Add Category</a>
     <table class="table table-centered mb-0">
         <thead>
         <tr>
-            <th>Mã</th>
-            <th>Tên loại sản phẩm</th>
-            <th>Mô tả</th>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
 {{--            <th>Active</th>--}}
-            <th>Chức năng</th>
+            <th>Action</th>
         </tr>
         </thead>
         <tbody>

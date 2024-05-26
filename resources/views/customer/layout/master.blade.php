@@ -334,6 +334,9 @@
 			@if(session('error'))
 				swal("Error", "{{session('error')}}", "error");
 			@endif
+            @if(session('success'))
+            swal("Success", "{{session('success')}}", "success");
+            @endif
 		});
 		$('.js-addwish-b2').on('click', function(e){
 			e.preventDefault();
