@@ -6,7 +6,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Model;
 
-class AppServiceProvider extends ServiceProvider
+class       AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
@@ -22,6 +22,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useBootstrap();
-        Model::shouldBeStrict();
+//        Model::shouldBeStrict();
     }
 }
