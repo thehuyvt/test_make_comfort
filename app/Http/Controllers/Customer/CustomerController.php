@@ -61,11 +61,12 @@ class CustomerController extends Controller
 
         $relatedProducts = Product::query()
             ->where('category_id', $product->category_id)
-            ->where('id', $product->id)
+            ->where('id', '!=',$product->id)
             ->limit(16)->get();
-        foreach ($relatedProducts as $product){
-            $product->sale_price = number_format($product->sale_price);
-            $product->old_price = number_format($product->old_price);
+
+        foreach ($relatedProducts as $each){
+            $each->sale_price = number_format($each->sale_price);
+            $each->old_price = number_format($each->old_price);
         }
         return view('customer.product.detail', [
             'product'=>$product,

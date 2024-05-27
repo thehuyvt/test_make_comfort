@@ -55,7 +55,6 @@ class AuthCustomerController extends Controller
     public function processLogin(LoginRequest $request)
     {
         $customer = Customer::query()->where('email', $request->email)->first();
-//        dd($customer);
         if ($customer && Hash::check($request->password, $customer->password)) {
             session()->put('customer_id', $customer->id);
             session()->put('customer_name', $customer->name);

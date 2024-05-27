@@ -68,8 +68,10 @@ Route::post('login', [AuthCustomerController::class, 'processLogin'])->name('cus
 Route::middleware([LoginCustomerMiddleware::class, RevalidateBackHistory::class])->group(function (){
     Route::get('profile', [AuthCustomerController::class, 'profile'])->name('customers.profile');
     Route::get('logout', [AuthCustomerController::class, 'logout'])->name('customers.logout');
-    Route::get('cart', [CustomerController::class, 'cart'])->name('customers.cart');
-    Route::post('add-cart/{product}', [CartController::class, 'update'])->name('carts.update');
+    Route::get('cart', [CartController::class, 'index'])->name('carts.index');
+    Route::post('add-cart/{product}', [CartController::class, 'addProductToCart'])->name('carts.add-product-to-cart');
+    Route::post('update-cart/{orderCartId}', [CartController::class, 'updateCart'])->name('carts.update-product');
+    Route::post('remove-product/{orderCartId}', [CartController::class, 'removeProduct'])->name('carts.remove-product');
 });
 
 //Guest

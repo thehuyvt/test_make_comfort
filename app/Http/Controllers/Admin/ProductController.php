@@ -24,10 +24,11 @@ class ProductController extends Controller
     {
         $this->model = new Product();
 
-        $routeName = Route::currentRouteName();
-        $arr = explode('.', $routeName);
-        $arr = array_map('ucfirst', $arr);
-        $title = implode(' - ', $arr);
+//        $routeName = Route::currentRouteName();
+//        $arr = explode('.', $routeName);
+//        $arr = array_map('ucfirst', $arr);
+//        $title = implode(' - ', $arr);
+        $title = 'Sản phẩm';
 
         View::share('title', $title);
     }
@@ -89,6 +90,7 @@ class ProductController extends Controller
         $product->fill($request->all());
 
         if($request->thumb){
+            Storage::deleteDirectory('public/uploads/'.$product->id.'/thumb');
             $path = Storage::disk('public')->putFile('uploads/'.$product->id.'/thumb', $request->file('thumb'));
             $product->thumb = $path;
         } else {
@@ -97,26 +99,38 @@ class ProductController extends Controller
 
         // product_images
         $listImages = array_filter_empty($request->images);
-        foreach ($listImages as $image){
-            $path = Storage::disk('public')->putFile('uploads/'.$product->id.'/images', $image);
-            $product->images()->create([
-                'path' => $path,
-            ]);
+        if ($listImages){
+            Storage::deleteDirectory('public/uploads/'.$product->id.'/images');
+            $product->images()->delete();
+            foreach ($listImages as $image){
+                $path = Storage::disk('public')->putFile('uploads/'.$product->id.'/images', $image);
+                $product->images()->create([
+                    'path' => $path,
+                ]);
+            }
         }
 
         //product_variants
-        $product->variants()->delete();
-
         $variants = $request->variants;
         foreach ($variants as $key => $quantity){
-            $product->variants()->create([
-                'key' => $key,
-                'quantity' => $quantity,
-            ]);
+            $check = true;
+            foreach ($product->variants as $each){
+                if ($key === $each->key){
+                    $each->update([
+                        'quantity' => $quantity,
+                    ]);
+                    $check=false;
+                }
+            }
+            if ($check){
+                $product->variants()->create([
+                    'key' => $key,
+                    'quantity' => $quantity,
+                ]);
+            }
         }
 
         $product->save();
-
         return true;
     }
 
