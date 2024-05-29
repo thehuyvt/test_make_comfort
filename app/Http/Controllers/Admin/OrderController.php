@@ -6,15 +6,25 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Models\Order;
+use App\Models\Product;
+use Illuminate\Support\Facades\View;
 
 class OrderController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    private $model;
+    public function __construct()
+    {
+        $this->model = new Product();
+        $title = 'Đơn hàng';
+
+        View::share('title', $title);
+    }
     public function index()
     {
-        //
+
     }
 
     /**

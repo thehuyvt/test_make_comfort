@@ -24,10 +24,6 @@ class ProductController extends Controller
     {
         $this->model = new Product();
 
-//        $routeName = Route::currentRouteName();
-//        $arr = explode('.', $routeName);
-//        $arr = array_map('ucfirst', $arr);
-//        $title = implode(' - ', $arr);
         $title = 'Sản phẩm';
 
         View::share('title', $title);
@@ -51,7 +47,7 @@ class ProductController extends Controller
                     $q->orWhere('id', 'like', '%'.$value.'%');
                 });
             })
-            ->paginate(1);
+            ->paginate(10);
         foreach ($listProducts as $product){
             $product->status = ProductStatusEnum::getNameStatus($product->status);
         }

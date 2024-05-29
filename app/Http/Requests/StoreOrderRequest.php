@@ -22,7 +22,18 @@ class StoreOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name'=>[
+                'required',
+                'string',
+            ],
+            'address'=>[
+                'required',
+                'text',
+            ],
+            'phone_number'=>[
+                'required',
+                'max:20',
+            ],
         ];
     }
 }
