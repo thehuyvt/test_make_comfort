@@ -5,32 +5,32 @@
         <div class="top-bar">
             <div class="content-topbar flex-sb-m h-full container">
                 <div class="left-top-bar">
-                    Free shipping for standard order over $100
+                    MakeComfort Xin Chào{{", ". session()->get('customer_name')}}
                 </div>
 
                 <div class="right-top-bar flex-w h-full">
                     <a href="#" class="flex-c-m trans-04 p-lr-25">
-                        Help & FAQs
+                        Ngày: {{now()->format('d/m/Y')}}
                     </a>
 
                     @if(session()->has('customer_id'))
 
                         <a href="{{route('customers.profile')}}" class=" flex-c-m trans-04 p-lr-25">
-                            Hi, {{session()->get('customer_name')}} Your Profile
+                            Tài khoản
                         </a>
 
 
                         <a href="{{route('customers.logout')}}" class="flex-c-m trans-04 p-lr-25">
-                            Sign Out
+                            Đăng xuất
                         </a>
                     @endif
                     @if(!session()->has('customer_id'))
                         <a href="{{route("customers.login")}}" class="flex-c-m trans-04 p-lr-25">
-                            Sign In
+                            Đăng nhập
                         </a>
 
                         <a href="{{route('customers.register')}}" class="flex-c-m trans-04 p-lr-25">
-                            Sign Up
+                            Đăng ký
                         </a>
                     @endif
 
@@ -42,7 +42,7 @@
             <nav class="limiter-menu-desktop container">
 
                 <!-- Logo desktop -->
-                <a href="#" class="mr-5">
+                <a href="{{route('customers.index')}}" class="mr-5">
                     <img src="{{asset('customer/images/icons/logo-01.png')}}" height="68px" alt="IMG-LOGO">
                 </a>
 
@@ -50,32 +50,19 @@
                 <div class="menu-desktop">
                     <ul class="main-menu">
                         <li class="active-menu">
-                            <a href="index.html">Home</a>
-                            <ul class="sub-menu">
-                                <li><a href="index.html">Homepage 1</a></li>
-                                <li><a href="home-02.html">Homepage 2</a></li>
-                                <li><a href="home-03.html">Homepage 3</a></li>
-                            </ul>
+                            <a href="{{route('customers.index')}}">Trang chủ</a>
                         </li>
 
                         <li>
-                            <a href="product.html">Shop</a>
-                        </li>
-
-                        <li class="label1" data-label1="hot">
-                            <a href="shoping-cart.html">Features</a>
+                            <a href="#">Sản phẩm</a>
                         </li>
 
                         <li>
-                            <a href="blog.html">Blog</a>
+                            <a href="#">Về chúng tôi</a>
                         </li>
 
                         <li>
-                            <a href="about.html">About</a>
-                        </li>
-
-                        <li>
-                            <a href="contact.html">Contact</a>
+                            <a href="#">Liên hệ</a>
                         </li>
                     </ul>
                 </div>

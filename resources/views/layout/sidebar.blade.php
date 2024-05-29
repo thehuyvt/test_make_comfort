@@ -26,6 +26,13 @@
             </li>
 
             <li class="side-nav-item">
+                <a href="{{route('users.index')}}" class="side-nav-link">
+                    <i class=" mdi mdi-cart-outline"></i>
+                    <span> Danh sách đơn hàng </span>
+                </a>
+            </li>
+
+            <li class="side-nav-item">
                 <a href="{{route('categories.index')}}" class="side-nav-link">
                     <i class="uil-layer-group"></i>
                     <span> Các loại sản phẩm</span>

@@ -131,54 +131,32 @@
                                     <input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="phone_number" value="{{$order->phone_number}}">
                                 </div>
                             </label>
-{{--                            <label class="stext-102 cl2 p-t-4 w-100 mb-2">Email--}}
-{{--                                <div class="bor8 bg0 ">--}}
-{{--                                    <input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="email" value="{{$order->email}}">--}}
-{{--                                </div>--}}
-{{--                            </label>--}}
                             <label class="stext-102 cl2 p-t-4 w-100 mb-2">Địa chỉ
                                 <div class="bor8 bg0 ">
                                     <input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="address" value="{{$order->address}}">
-                                    <input class="stext-111 cl8 plh3 size-111 p-lr-15" type="number" min="1" name="address" value="3">
                                 </div>
                             </label>
                             <label class="stext-102 cl2 p-t-4 w-100 mb-2">Ghi chú
                                 <div class="bor8 bg0 ">
-                                    <textarea class="stext-111 cl8 plh3  p-lr-15 p-t-15" cols="43" rows="4" name="note" placeholder="Ghi chú ...">{{$order->note??''}}</textarea>
+                                    <textarea class="stext-111 cl8 plh3  p-lr-15 p-t-15" cols="53" rows="4" name="note" placeholder="Ghi chú ...">{{$order->note??''}}</textarea>
                                 </div>
                             </label>
                         </div>
 
-                        <div class="flex-w flex-t bor12 p-t-15 p-b-30">
-                            <div class="size-208 w-full-ssm">
-								<span class="stext-110 cl2">
-									Phương thức thanh toán:
-								</span>
-                            </div>
-
-                            <div class="size-209 p-r-18 p-r-0-sm w-full-ssm">
-                                <p class="stext-111 cl6 p-t-2">
-                                    There are no shipping methods available. Please double check your address, or contact us if you need any help.
-                                </p>
-                            </div>
-                        </div>
-
                         <div class="flex-w flex-t p-t-27 p-b-33">
-                            <div class="size-208">
+                            <div class="mb-3">
 								<span class="mtext-101 cl2">
-									Total:
+									Phương thức thanh toán
 								</span>
                             </div>
 
                             <div class="size-209 p-t-1">
-								<span class="mtext-110 cl2">
-									$79.65
-								</span>
+
                             </div>
                         </div>
 
                         <button class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer">
-                            Proceed to Checkout
+                            Đặt hàng
                         </button>
                     </div>
                 </div>
@@ -199,6 +177,7 @@
            input.value = parseInt(input.value) + change;
            quantity = input.value;
            const row = $(element).closest('.table_row');
+           console.log(row);
            const orderProductId = row.data('product-id');
            let sumOrder = $('#sum-order');
            let totalOrder = $('#total-order');
@@ -207,7 +186,7 @@
             if (quantity > 0) {
                 updateCart(orderProductId, quantity, input, sumOrder, totalOrder);
             } else {
-                removeProductRow(orderProductId, sumOrder, totalOrder);
+                removeProductRow(row, orderProductId, sumOrder, totalOrder);
             }
         }
 
@@ -235,30 +214,36 @@
             });
         }
 
-        function removeProductRow(orderProductId, sumOrder, totalOrder) {
+        function removeProductRow(row, orderProductId, sumOrder, totalOrder) {
             row.remove();
             // Optionally, make an AJAX request to the server to update the cart
             // Example AJAX request (adjust the URL and data format as needed)
-            fetch(`/remove-product/${orderProductId}`, {
-                method: 'POST',
+            $.ajax({
+                url: `/remove-product/${orderProductId}`,
+                type: 'POST',
+                contentType: 'application/json',
                 headers: {
-                    'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include the CSRF token if using Laravel
                 },
-                body: JSON.stringify({ id: id }),
+                data: {
+                    _token: '{{ csrf_token() }}',
+                },
                 success: function(response) {
+                    console.log(response.success);
                     if (response.success) {
-                        sumOrder.text(response.order.total.toLocaleString());
-                        totalOrder.text((response.order.total + 30000).toLocaleString('en-US'));
+                        sumOrder.text(response.order.total.toLocaleString() + "đ");
+                        totalOrder.text((response.order.total + 30000).toLocaleString() + "đ");
+                        toastr.success('Đã xóa sản phẩm khỏi giỏ hàng!');
                     } else {
                         toastr.error('Xóa sản phẩm thất bại.');
                     }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                    toastr.error('Đã xảy ra lỗi khi xóa sản phẩm.');
                 }
-
             });
         }
 
     </script>
-
-
 @endpush
