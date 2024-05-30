@@ -5,7 +5,7 @@ enum ProductStatusEnum: int
 {
     case STOP_SELLING = 2;
     case ON_SALE = 1;
-    case DRAFT = 0;
+    case DRAFT = 3;
 
     public static function getArrayStatus()
     {

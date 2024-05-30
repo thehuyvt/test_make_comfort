@@ -40,7 +40,7 @@ class ProductController extends Controller
             ->when($request->status, function ($q,$value){
                 $q->where('status', $value);
             })
-            ->when($request->status, function ($q,$value){
+            ->when($request->key, function ($q,$value){
                 $q->where(function($q) use ($value){
                     $q->orWhere('name', 'like', '%'.$value.'%');
                     $q->orWhere('slug', 'like', '%'.$value.'%');
