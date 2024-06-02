@@ -108,6 +108,12 @@ class ProductController extends Controller
 
         //product_variants
         $variants = $request->variants;
+        foreach ($product->variants as $variant){
+            if (!isset($variants[$variant->key])){
+                $variant->quantity = 0;
+                $variant->save();
+            }
+        }
         foreach ($variants as $key => $quantity){
             $check = true;
             foreach ($product->variants as $each){
@@ -137,7 +143,6 @@ class ProductController extends Controller
     {
         $categories = Category::query()->get();
         $listStatus = ProductStatusEnum::getArrayStatus();
-
         return view('product.edit', [
             'product' => $product,
             'categories'=> $categories,
@@ -163,7 +168,6 @@ class ProductController extends Controller
                 }
             }
         }
-
         return $options;
     }
 }
