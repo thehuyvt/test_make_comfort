@@ -43,8 +43,42 @@
 	<!-- Header -->
     @include('customer.layout.header')
 	<!-- Cart -->
+    <div class="wrap-header-cart js-panel-cart">
+        <div class="s-full js-hide-cart"></div>
 
-{{--    Content--}}
+        <div class="header-cart flex-col-l p-l-65 p-r-25">
+            <div class="header-cart-title flex-w flex-sb-m p-b-8">
+				<span class="mtext-103 cl2">
+					Giỏ hàng của bạn
+				</span>
+
+                <div class="fs-35 lh-10 cl2 p-lr-5 pointer hov-cl1 trans-04 js-hide-cart">
+                    <i class="zmdi zmdi-close"></i>
+                </div>
+            </div>
+
+            <div class="header-cart-content flex-w js-pscroll">
+                <ul id="cart-items" class="header-cart-wrapitem w-full">
+{{--                    //Thêm sản phẩm vào cart ở đây--}}
+                </ul>
+
+                <div class="w-full">
+                    <div id="total-view-cart" class="header-cart-total w-full p-tb-40">
+{{--                        Total: $75.00--}}
+                    </div>
+
+                    <div class="header-cart-buttons">
+                        <a href="{{route("carts.index")}}" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10">
+                            Thanh toán
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {{--    Content--}}
     @yield('content')
 
 	<!-- Footer -->
@@ -167,6 +201,74 @@
 	</script>
 <!--===============================================================================================-->
 	<script src="{{asset('customer/js/main.js')}}"></script>
+    <script>
+        //tính tổng số lượng sản phẩm trong giỏ hàng
+        function getSumProductInCart() {
+            $.ajax({
+                url: '/sum-products-in-cart',
+                type: 'GET',
+                success: function(response) {
+                    $('#sum-cart').attr('data-notify', response.total);
+                    $('#sum-cart-mobile').attr('data-notify', response.total);
+                    getProductsInCart();
+                },
+                error: function(xhr, status, error) {
+                    toastr.error('Error:', error);
+                }
+            });
+        }
+        getSumProductInCart();
+
+        function addCartItem(thumb, name, key, quantity, price) {
+            var cartItemHtml = `
+            <li class="header-cart-item flex-w flex-t m-b-12">
+                <div class="header-cart-item-img">
+                    <img src="${thumb}" alt="IMG">
+                </div>
+
+                <div class="header-cart-item-txt p-t-8">
+                    <a href="#" class="header-cart-item-name m-b-0 hov-cl1 trans-04">
+                        ${name}
+                    </a>
+                    <span class="block1-info stext-102 trans-04 m-b-8" style="font-size: 12px;">Loại: ${key}</span>
+                    <span class="header-cart-item-info">
+                        ${quantity} x ${price}
+                    </span>
+                </div>
+            </li>
+            `;
+
+            $('#cart-items').append(cartItemHtml);
+        }
+        function getProductsInCart() {
+            $('#cart-items').children().remove();
+            $.ajax({
+                url: '/list-products-in-cart',
+                type: 'GET',
+                success: function(response) {
+                    let orderProducts = response.listProducts;
+                    let asset = window.location.origin + '/storage/';
+
+                    if (orderProducts.length > 0) {
+                        $.each(orderProducts, function(index, orderProduct) {
+                            addCartItem( asset + orderProduct.thumb,
+                                orderProduct.variant.product.name,
+                                orderProduct.variant.key,
+                                orderProduct.quantity,
+                                orderProduct.price.toLocaleString()+"đ"
+                            );
+                        })
+                    }else{
+                        $('#cart-items').append("<h4 class='stext-101 cl3'>Giỏ hàng trống!!!</h4>");
+                    }
+                    $('#total-view-cart').text("Tổng: " + response.order.total.toLocaleString() + "đ");
+                },
+                error: function(xhr, status, error) {
+                    toastr.error('Error:', error);
+                }
+            });
+        }
+    </script>
 @stack('js')
 </body>
 </html>

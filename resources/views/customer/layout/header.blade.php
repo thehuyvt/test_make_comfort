@@ -72,9 +72,16 @@
                     <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
                         <i class="zmdi zmdi-search"></i>
                     </div>
-                    <a href="{{route('carts.index')}}" class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" data-notify="2">
-                        <i class="zmdi zmdi-shopping-cart"></i>
-                    </a>
+                    @if(session()->has('customer_id'))
+                        <div id="sum-cart" class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" data-notify="0">
+                            <i class="zmdi zmdi-shopping-cart"></i>
+                        </div>
+                    @endif
+                    @if(!session()->has('customer_id'))
+                        <a href="{{route('customers.login')}}" class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 " data-notify="0">
+                            <i class="zmdi zmdi-shopping-cart"></i>
+                        </a>
+                    @endif
                 </div>
             </nav>
         </div>
@@ -92,9 +99,9 @@
             <div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 js-show-modal-search">
                 <i class="zmdi zmdi-search"></i>
             </div>
-            <a href="{{route('carts.index')}}" class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" data-notify="2">
+            <div id="sum-cart-mobile" class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" data-notify="0">
                 <i class="zmdi zmdi-shopping-cart"></i>
-            </a>
+            </div>
         </div>
 
         <!-- Button show menu -->
@@ -111,62 +118,55 @@
         <ul class="topbar-mobile">
             <li>
                 <div class="left-top-bar">
-                    Free shipping for standard order over $100
+                    MakeComfort Xin Chào{{", ". session()->get('customer_name')}}
                 </div>
             </li>
 
             <li>
                 <div class="right-top-bar flex-w h-full">
-                    <a href="#" class="flex-c-m p-lr-10 trans-04">
-                        Help & FAQs
+                    <a href="#" class="flex-c-m trans-04 p-lr-10">
+                        Ngày: {{now()->format('d/m/Y')}}
                     </a>
 
-                    <a href="#" class="flex-c-m p-lr-10 trans-04">
-                        My Account
-                    </a>
+                    @if(session()->has('customer_id'))
 
-                    <a href="#" class="flex-c-m p-lr-10 trans-04">
-                        EN
-                    </a>
+                        <a href="{{route('customers.profile')}}" class=" flex-c-m trans-04 p-lr-10">
+                            Tài khoản
+                        </a>
 
-                    <a href="#" class="flex-c-m p-lr-10 trans-04">
-                        USD
-                    </a>
+
+                        <a href="{{route('customers.logout')}}" class="flex-c-m trans-04 p-lr-10">
+                            Đăng xuất
+                        </a>
+                    @endif
+                    @if(!session()->has('customer_id'))
+                        <a href="{{route("customers.login")}}" class="flex-c-m trans-04 p-lr-10">
+                            Đăng nhập
+                        </a>
+
+                        <a href="{{route('customers.register')}}" class="flex-c-m trans-04 p-lr-10">
+                            Đăng ký
+                        </a>
+                    @endif
                 </div>
             </li>
         </ul>
 
         <ul class="main-menu-m">
-            <li>
-                <a href="index.html">Home</a>
-                <ul class="sub-menu-m">
-                    <li><a href="index.html">Homepage 1</a></li>
-                    <li><a href="home-02.html">Homepage 2</a></li>
-                    <li><a href="home-03.html">Homepage 3</a></li>
-                </ul>
-                <span class="arrow-main-menu-m">
-						<i class="fa fa-angle-right" aria-hidden="true"></i>
-					</span>
+            <li class="active-menu">
+                <a href="{{route('customers.index')}}">Trang chủ</a>
             </li>
 
             <li>
-                <a href="product.html">Shop</a>
+                <a href="#">Sản phẩm</a>
             </li>
 
             <li>
-                <a href="shoping-cart.html" class="label1 rs1" data-label1="hot">Features</a>
+                <a href="#">Về chúng tôi</a>
             </li>
 
             <li>
-                <a href="blog.html">Blog</a>
-            </li>
-
-            <li>
-                <a href="about.html">About</a>
-            </li>
-
-            <li>
-                <a href="contact.html">Contact</a>
+                <a href="#">Liên hệ</a>
             </li>
         </ul>
     </div>

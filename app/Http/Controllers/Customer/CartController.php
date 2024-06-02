@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Customer;
 
+use App\Enums\OrderPaymentMethodEnum;
 use App\Enums\OrderStatusEnum;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CheckOutRequest;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\OrderProduct;
@@ -15,17 +17,36 @@ class CartController extends Controller
 {
     public function index()
     {
+        $customerId = session()->get('customer_id');
         $order = Order::query()
-            ->where('customer_id', session()->get('customer_id'))
-            ->where('status', OrderStatusEnum::DRAFT)->first();
+            ->where('customer_id', $customerId)
+            ->where('status', OrderStatusEnum::DRAFT)
+            ->first();
+
+        if(!$order) {
+            $customer = Customer::find($customerId);
+
+            $order = Order::create([
+                'customer_id' => $customerId,
+                'status' => OrderStatusEnum::DRAFT,
+                'name' => $customer->name,
+                'address' => $customer->address,
+                'phone_number' => $customer->phone_number,
+                'total' => 0,
+            ]);
+        }
 
         $listProducts = OrderProduct::query()->with(['variant.product'])
             ->where('order_id', $order->id)
             ->get();
+
+        $listPaymentMethods = OrderPaymentMethodEnum::getArrayPaymentMethod();
         return view('customer.cart',[
-            'listProducts' => $listProducts,
-            'order' => $order,
-        ]);
+                    'listProducts' => $listProducts,
+                    'order' => $order,
+                    'listPaymentMethods' => $listPaymentMethods,
+                ]
+        );
     }
     public function addProductToCart(Request $request, Product $product)
     {
@@ -73,10 +94,10 @@ class CartController extends Controller
                 'thumb' => $product->thumb,
             ]);
         } else {
-            $check = $order->orderProducts()->where('product_variant_id', $productVariant->id)->first();
-            if($check) {
-                $check->quantity = $check->quantity + $quantity;
-                $check->save();
+            $orderProduct = $order->orderProducts()->where('product_variant_id', $productVariant->id)->first();
+            if($orderProduct) {
+                $orderProduct->quantity = $orderProduct->quantity + $quantity;
+                $orderProduct->save();
             } else {
                 $order->orderProducts()->create([
                     'product_variant_id' => $productVariant->id,
@@ -128,7 +149,6 @@ class CartController extends Controller
 
     public function removeProduct( $id) {
         // Logic to remove the product from the cart
-        // For example:
         $productVariant = OrderProduct::find($id);
 
         $order = Order::query()->find($productVariant->order_id);
@@ -142,6 +162,65 @@ class CartController extends Controller
         return response()
             ->json([
                 'success' => true,
+                'order' => $order,
+            ]);
+    }
+
+    public function sumProductsInCart()
+    {
+        $order = Order::query()->where('customer_id', session()->get('customer_id'))
+            ->where('status', OrderStatusEnum::DRAFT)->first();
+        if (!$order) {
+            return response()
+                ->json([
+                    'success' => true,
+                    'total' => 0,
+                ]);
+        }
+        $total = OrderProduct::where('order_id', $order->id)->sum('quantity');
+        return response()
+            ->json([
+                'success' => true,
+                'total' => $total,
+            ]);
+    }
+
+    //Checkout còn thiếu thanh toán vnpay
+    public function checkOut(CheckOutRequest $request, Order $order)
+    {
+        if ($request->payment_method == 1){
+            $order->update([
+                'payment_method' => $request->payment_method,
+                'status' => OrderStatusEnum::PENDING,
+                'name' => $request->name,
+                'address' => $request->address,
+                'phone_number' => $request->phone_number,
+                'note' => $request->note,
+                'placed_at' => date_format(now(), 'Y-m-d H:i:s'),
+                'total' => $order->total + 30000,
+            ]);
+            return redirect()->route('customers.index')->with("success", "Bạn đã đặt đơn hàng thành công!");
+        }
+    }
+
+    public function listProductsInCart()
+    {
+        $order = Order::query()->where('customer_id', session()->get('customer_id'))
+            ->where('status', OrderStatusEnum::DRAFT)->first();
+        if (!$order) {
+            return response()
+                ->json([
+                    'success' => true,
+                    'listProducts' => [],
+                ]);
+        }
+        $listProducts = OrderProduct::query()->with(['variant.product'])
+            ->where('order_id', $order->id)
+            ->get();
+        return response()
+            ->json([
+                'success' => true,
+                'listProducts' => $listProducts,
                 'order' => $order,
             ]);
     }
