@@ -247,6 +247,7 @@
             }
         });
 
+        //Hiển thị ảnh thumb
         document.getElementById('thumb').addEventListener('change', function(event) {
             const previewContainer = document.getElementById('thumb_preview');
             previewContainer.innerHTML = ''; // Xóa bất kỳ xem trước nào đã tồn tại trước đó
@@ -271,7 +272,6 @@
         });
 
         //Add options
-
         function setSelect2(){
             $('.options_values').select2({
                 tags: true,
@@ -303,6 +303,7 @@
                 }
             });
         }
+
         $(document).ready(function () {
             $('#form').ajaxForm({
                 beforeSubmit: function(arr, $form, options) {
@@ -375,6 +376,8 @@
                 setSelect2();
             });
             //nếu khi bấm nút generate thì sẽ tạo ra b
+            var oldVariants = @json($product->variants ?? []);
+            console.log(oldVariants);
             $('#btn_generate').click(function() {
                 var options = {}; // Đối tượng để lưu trữ tất cả các options
 
@@ -408,12 +411,28 @@
 
                         if(index === values.length - 1){
                             variantKey = variantKey.join('-');
-                            $tr.append($('<td>').append($('<input>').attr({
-                                type: 'number',
-                                name: `variants[${variantKey}]`,
-                                class: 'form-control',
-                                value: '1'
-                            })));// Cột quantity với input
+                            var check = true;
+                            for (let i = 0; i < oldVariants.length; i++) {
+                                if (oldVariants[i].key === variantKey) {
+                                    $tr.append($('<td>').append($('<input>').attr({
+                                        type: 'number',
+                                        name: `variants[${variantKey}]`,
+                                        class: 'form-control',
+                                        value: oldVariants[i].quantity,
+                                    })));
+                                    check = false;
+                                    break;
+                                }
+                            }
+                            if (check){
+                                $tr.append($('<td>').append($('<input>').attr({
+                                    type: 'number',
+                                    name: `variants[${variantKey}]`,
+                                    class: 'form-control',
+                                    value: '1'
+                                })));// Cột quantity với input
+                            }
+
                         }
                     });
                     $tbody.append($tr);
