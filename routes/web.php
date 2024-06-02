@@ -72,6 +72,9 @@ Route::middleware([LoginCustomerMiddleware::class, RevalidateBackHistory::class]
     Route::post('add-cart/{product}', [CartController::class, 'addProductToCart'])->name('carts.add-product-to-cart');
     Route::post('update-cart/{orderCartId}', [CartController::class, 'updateCart'])->name('carts.update-product');
     Route::post('remove-product/{orderCartId}', [CartController::class, 'removeProduct'])->name('carts.remove-product');
+    Route::get('sum-products-in-cart', [CartController::class, 'sumProductsInCart'])->name('carts.sum-products-in-cart');
+    Route::post('check-out/{order}', [CartController::class, 'checkOut'])->name('carts.check-out');
+    Route::get('list-products-in-cart', [CartController::class, 'listProductsInCart'])->name('carts.list-products-in-cart');
 });
 
 //Guest
