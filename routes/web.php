@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AuthAdminController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Customer\AuthCustomerController;
@@ -54,6 +55,15 @@ Route::middleware([LoginAdminMiddleware::class, RevalidateBackHistory::class])->
         Route::get('change-password', [UserController::class, 'changePassword'])->name('change-password');
         Route::put('update-password', [UserController::class, 'updatePassword'])->name('update-password');
     });
+
+    Route::group(['prefix' => 'orders', 'as'=>'orders.'], function (){
+        Route::get('', [OrderController::class, 'index'])->name('index');
+        Route::get('show/{order}', [OrderController::class, 'show'])->name('show');
+        Route::get('edit/{order}', [OrderController::class, 'edit'])->name('edit');
+        Route::put('update/{order}', [OrderController::class, 'update'])->name('update');
+    });
+
+
 });
 
 Route::get('login-admin', [AuthAdminController::class, 'login'])->name('admin.login');

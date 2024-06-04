@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\OrderPaymentMethodEnum;
+use App\Enums\OrderStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Models\Order;
+use App\Models\OrderProduct;
 use App\Models\Product;
 use Illuminate\Support\Facades\View;
 
@@ -17,14 +20,25 @@ class OrderController extends Controller
     private $model;
     public function __construct()
     {
-        $this->model = new Product();
         $title = 'Đơn hàng';
 
         View::share('title', $title);
     }
     public function index()
     {
+        $orders = Order::query()
+            ->where('status', '!=', 1)
+            ->paginate(10);
 
+        foreach ($orders as $order){
+            $order->payment_method = OrderPaymentMethodEnum::getNamePaymentMethod($order->payment_method)['name'];
+            $order->status = OrderStatusEnum::getNameStatus($order->status);
+        }
+
+        return view('order.index',[
+            'orders' => $orders
+            ]
+        );
     }
 
     /**
@@ -48,7 +62,19 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        //
+        if (!$order){
+            return redirect()->route('orders.index')->with('error', 'Đơn hàng không tồn tại!');
+        }
+        $order->payment_method = OrderPaymentMethodEnum::getNamePaymentMethod($order->payment_method)['name'];
+        $order->status = OrderStatusEnum::getNameStatus($order->status);
+        $orderProducts = OrderProduct::query()->with('variant.product')
+            ->where('order_id', $order->id)
+            ->get();
+        return view('order.detail',[
+                'order' => $order,
+                'orderProducts' => $orderProducts,
+            ]
+        );
     }
 
     /**
@@ -56,7 +82,19 @@ class OrderController extends Controller
      */
     public function edit(Order $order)
     {
-        //
+        if (!$order){
+            return redirect()->route('orders.index')->with('error', 'Đơn hàng không tồn tại!');
+        }
+        $order->payment_method = OrderPaymentMethodEnum::getNamePaymentMethod($order->payment_method)['name'];
+        $order->status = OrderStatusEnum::getNameStatus($order->status);
+        $orderProducts = OrderProduct::query()->with('variant.product')
+            ->where('order_id', $order->id)
+            ->get();
+        return view('order.edit',[
+                'order' => $order,
+                'orderProducts' => $orderProducts,
+            ]
+        );
     }
 
     /**

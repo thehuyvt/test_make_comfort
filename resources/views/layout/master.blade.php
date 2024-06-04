@@ -51,7 +51,9 @@
                                         {{session()->get('success')}}
                                     </div>
                                 @endif
-
+                                <div class="row mb-3">
+                                    <button type="button" class="btn btn-light" onclick="goBack()">Trở về</button>
+                                </div>
                         @yield('content')
                     </div>
                 </div>
@@ -74,6 +76,11 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="{{asset('js/vendor.min.js')}}"></script>
 <script src="{{asset('js/app.min.js')}}"></script>
+        <script>
+            function goBack() {
+                window.history.back();
+            }
+        </script>
 @stack('js')
 
 {{--<!-- third party js -->--}}

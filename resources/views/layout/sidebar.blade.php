@@ -26,12 +26,19 @@
             </li>
 
             <li class="side-nav-item">
-                <a href="{{route('users.index')}}" class="side-nav-link">
-                    <i class=" mdi mdi-cart-outline"></i>
-                    <span> Danh sách đơn hàng </span>
+                <a href="javascript: void(0);" class="side-nav-link">
+                    <i class="mdi mdi-cart-outline"></i>
+                    <span> Đơn hàng</span>
                 </a>
+                <ul class="side-nav-second-level mm-collapse" aria-expanded="false">
+                    <li>
+                        <a href="{{route('orders.index')}}">Tất cả các đơn</a>
+                    </li>
+                    <li>
+                        <a href="#">Đơn chờ thanh toán</a>
+                    </li>
+                </ul>
             </li>
-
             <li class="side-nav-item">
                 <a href="{{route('categories.index')}}" class="side-nav-link">
                     <i class="uil-layer-group"></i>
