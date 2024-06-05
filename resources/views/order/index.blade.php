@@ -15,58 +15,67 @@
 {{--                        </div>--}}
                     </div>
                     {{--                    search and fill product--}}
-{{--                    <form id="searchForm" action="" method="get" class="row">--}}
-{{--                        <div class="col-sm-3">--}}
-{{--                            <div class="form-group">--}}
-{{--                                <label for="category">Loại sản phẩm</label>--}}
-{{--                                <select class="form-control" name="category">--}}
-{{--                                    <option value="">Tất cả</option>--}}
-{{--                                    @foreach($categories as $category)--}}
-{{--                                        <option value="{{ $category->id }}"--}}
-{{--                                                @if((int)request()->get('category') === $category->id)--}}
-{{--                                                    selected--}}
-{{--                                            @endif>--}}
-{{--                                            {{ $category->name }}--}}
-{{--                                        </option>--}}
-{{--                                    @endforeach--}}
-{{--                                </select>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
+                    <form id="searchForm" action="" method="get" class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="status">Trạng thái đơn hàng</label>
+                                <select class="form-control" name="status">
+                                    <option value="">Tất cả</option>
+                                    @foreach($listStatus as $value => $key)
+                                        @if($value !== 1)
+                                            <option value="{{ $value}}"
+                                                @selected(request()->get('status') == $value)
+                                            >
+                                                {{ $key }}
+                                            </option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
 
-{{--                        <div class="col-sm-3">--}}
-{{--                            <div class="form-group">--}}
-{{--                                <label for="status">Trạng thái</label>--}}
-{{--                                <select class="form-control" name="status">--}}
-{{--                                    <option value="">Tất cả</option>--}}
-{{--                                    @foreach($listStatus as $key => $status)--}}
-{{--                                        <option--}}
-{{--                                            value="{{$key}}"--}}
-{{--                                            @selected(request('status') == $key)--}}
-{{--                                        >--}}
-{{--                                            {{$status}}--}}
-{{--                                        </option>--}}
-{{--                                    @endforeach--}}
-{{--                                </select>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                        <div class="col-sm-3">--}}
-{{--                            <div class="form-group">--}}
-{{--                                <label for="key">Tìm kiếm bằng id, slug, tên,... </label>--}}
-{{--                                <input type="text" class="form-control" placeholder="Tìm kiếm ..." value="{{request()->get('key')}}" name="key">--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                        <div class="col-sm-3  form-group" >--}}
-{{--                            <div class="">--}}
-{{--                                <button type="submit" class="btn btn-primary form-control"  style="margin-top: 29px;">Tìm kiếm</button>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="payment_method">Phương thức thanh toán</label>
+                                <select class="form-control" name="payment_method">
+                                    <option value="">Tất cả</option>
+                                    @foreach($paymentMethods as $value => $paymentMethod)
+                                        <option
+                                            value="{{$value}}"
+                                            @selected(request('payment_method') == $value)
+                                        >
+                                            {{$paymentMethod['name']}}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="id">Mã đơn hàng </label>
+                                <input type="text" class="form-control" placeholder="Tìm kiếm ..." value="{{request()->get('id')}}" name="id">
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="key">Số điện thoại, tên </label>
+                                <input type="text" class="form-control" placeholder="Tìm kiếm ..." value="{{request()->get('key')}}" name="key">
+                            </div>
+                        </div>
+                        <div class="col-sm-2  form-group" >
+                            <div class="">
+                                <button type="submit" class="btn btn-primary form-control"  style="margin-top: 29px;">Tìm kiếm</button>
+                            </div>
+                        </div>
 
-{{--                    </form>--}}
+                    </form>
 
                     <table class="table table-striped text-center" id="table-index">
                         <thead>
                         <tr>
                             <th>Mã đơn hàng</th>
+                            <th>Tên người nhận</th>
+                            <th>Số điện thoại</th>
                             <th>Tổng giá trị đơn</th>
                             <th>Phương thức thanh toán</th>
                             <th>Thời gian đặt</th>
@@ -78,6 +87,8 @@
                         @foreach($orders as $order)
                             <tr style="line-height: 40px">
                                 <td>#{{$order->id}}</td>
+                                <td>{{$order->name}}</td>
+                                <td>{{$order->phone_number}}</td>
                                 <td>{{$order->total}}</td>
                                 <td>{{$order->payment_method}}</td>
                                 <td>{{$order->placed_at}}</td>

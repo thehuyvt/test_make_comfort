@@ -61,6 +61,8 @@ Route::middleware([LoginAdminMiddleware::class, RevalidateBackHistory::class])->
         Route::get('show/{order}', [OrderController::class, 'show'])->name('show');
         Route::get('edit/{order}', [OrderController::class, 'edit'])->name('edit');
         Route::put('update/{order}', [OrderController::class, 'update'])->name('update');
+        Route::get('get-orders/{status}', [OrderController::class, 'getOrdersByStatus'])->name('get-orders-by-status');
+
     });
 
 

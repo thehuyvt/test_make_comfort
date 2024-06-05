@@ -170,4 +170,9 @@ class ProductController extends Controller
         }
         return $options;
     }
+
+    public function search()
+    {
+
+    }
 }

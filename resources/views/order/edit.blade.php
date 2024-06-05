@@ -53,7 +53,7 @@
                                 <th>Hành động</th>
                             </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="list-order-product">
                             @foreach($order->orderProducts as $orderProduct)
                                 <tr style="line-height: 48px;">
                                     <td>
@@ -81,12 +81,17 @@
 {{--                                        <a href="" class="action-icon">--}}
 {{--                                            <i class="mdi mdi-square-edit-outline"></i>--}}
 {{--                                        </a>--}}
-                                        <a href="" class="action-icon">
+                                        <a href="#" class="action-icon">
                                             <i class="mdi mdi-delete"></i>
                                         </a>
                                     </td>
                                 </tr>
                             @endforeach
+                            <tr>
+                                <td>
+                                    <input type="text" id="product-name" name="name" class="form-control">
+                                </td>
+                            </tr>
                             </tbody>
 
                             <caption>
@@ -95,17 +100,12 @@
                                     Thêm sản phẩm
                                 </button>
                             </caption>
-{{--                            <tfoot>--}}
-{{--                                <tr class="row justify-content-center">--}}
-{{--                                    <td>--}}
-{{--                                    </td>--}}
-{{--                                </tr>--}}
-{{--                            </tfoot>--}}
                         </table>
                     </div>
                     <!-- end table-responsive -->
                 </div>
             </div>
-        </div> <!-- end col -->
+        </div> <!-- end col -->S
     </div>
 @endsection
+
