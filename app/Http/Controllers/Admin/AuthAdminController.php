@@ -25,7 +25,7 @@ class AuthAdminController extends Controller
     //vao trang chu
     public function dashboard()
     {
-        return view('layout.master');
+        return view('dashboard.index');
     }
 
     public function login()

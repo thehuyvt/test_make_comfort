@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
-use Yajra\DataTables\DataTables;
 
 class ProductController extends Controller
 {
@@ -80,7 +79,9 @@ class ProductController extends Controller
     {
         $options = [];
         foreach($request->options_key as $index => $key){
-            $options[$key] = $request->options_values[$index];
+            if(!empty($key)){
+                $options[$key] = $request->options_values[$index];
+            }
         }
         $product->options = $options;
         $product->fill($request->all());

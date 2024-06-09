@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AuthAdminController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\StatisticalController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Customer\AuthCustomerController;
 use App\Http\Controllers\Customer\CartController;
@@ -62,6 +63,12 @@ Route::middleware([LoginAdminMiddleware::class, RevalidateBackHistory::class])->
         Route::get('edit/{order}', [OrderController::class, 'edit'])->name('edit');
         Route::put('update/{order}', [OrderController::class, 'update'])->name('update');
         Route::get('get-orders/{status}', [OrderController::class, 'getOrdersByStatus'])->name('get-orders-by-status');
+
+    });
+
+    Route::group(['prefix' => 'statistical', 'as'=>'statistical.'], function (){
+        Route::get('/sum-revenue', [StatisticalController::class, 'getRevenue'])->name('get-revenue');
+        Route::get('/sum-orders', [StatisticalController::class, 'getSumOrders'])->name('get-sum-orders');
 
     });
 

@@ -18,6 +18,7 @@
         }
     </style>
     <link rel="stylesheet" href="{{ asset('dists/select2-4.0.13/dist/css/select2.min.css') }}">
+    <link href="{{asset('css/vendor/summernote-bs4.css')}}" rel="stylesheet" type="text/css" />
 @endpush
 @section('content')
     @if ($errors->any())
@@ -33,7 +34,8 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <form action="{{route('products.update', $product)}}" id="form" method="post" enctype="multipart/form-data">
+                    <form action="{{route('products.update', $product->id)}}" id="form" method="post" enctype="multipart/form-data">
+                        @method('POST')
                         @csrf
                         <div class="row">
                             <div class="col-xl-6" data-select2-id="6">
@@ -51,7 +53,8 @@
 
                                 <div class="form-group">
                                     <label for="description">Mô tả sản phẩm</label>
-                                    <textarea class="form-control" id="description" name="description" rows="5"
+{{--                                    <div id="summernote-basic"></div>--}}
+                                    <textarea id="summernote-basic" class="form-control" id="description" name="description" rows="5"
                                               placeholder="Nhập mô tả">{{ $product->description }}</textarea>
                                 </div>
 
@@ -199,7 +202,7 @@
                                 </table>
                             </div>
                             <button class="btn btn-block btn-primary">
-                                Cập nhật sản phẩm
+                                Lưu thông tin sản phẩm
                             </button>
                         </div>
                     </form>
@@ -219,7 +222,8 @@
     <script src="{{ asset('dists/select2-4.0.13/dist/js/select2.min.js') }}"></script>
     <script src="{{ asset('dists/jquery.form.js') }}"></script>
     <script src="{{ asset('dists/notify.min.js') }}"></script>
-
+    <script src="{{ asset('js/vendor/summernote-bs4.min.js') }}"></script>
+    <script src="{{ asset('js/pages/demo.summernote.js') }}"></script>
     <script>
         //Preview ảnh
         document.getElementById('images').addEventListener('change', function(event) {
