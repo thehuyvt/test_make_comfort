@@ -6,6 +6,7 @@ use App\Enums\GenderEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\UpdateCustomerRequest;
 use App\Models\Customer;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
@@ -23,7 +24,6 @@ class AuthCustomerController extends Controller
         $title = implode(' - ', $arr);
 
         $genders = GenderEnum::getArrayGender();
-
         View::share('title', $title);
         View::share('genders', $genders);
     }
@@ -61,6 +61,9 @@ class AuthCustomerController extends Controller
             session()->put('customer_email', $customer->email);
             session()->put('customer_address', $customer->address);
             session()->put('customer_phone_number', $customer->phone_number);
+            if ($request->url == URL::route('customers.login')||$request->url == URL::route('customers.register')) {
+                return redirect()->route('customers.index');
+            }
             return redirect($request->url ?? URL::route('customers.index'));
         }else{
             return redirect()->route('auth-customer.login')
@@ -77,5 +80,27 @@ class AuthCustomerController extends Controller
         session()->forget('customer_address');
         session()->forget('customer_phone_number');
         return redirect()->route('customers.index');
+    }
+
+    public function editProfile()
+    {
+        $customer = Customer::query()->find(session('customer_id'));
+
+        return view('customer.profile.profile', [
+            'customer' => $customer,
+        ]);
+    }
+
+    public function updateProfile(UpdateCustomerRequest $request)
+    {
+        $customer = Customer::query()->find(session('customer_id'));
+        $customer->update([
+            'name' => $request->name,
+            'phone_number' => $request->phone_number,
+            'address' => $request->address,
+            'gender' => $request->gender,
+        ]);
+        return redirect()->route('customers.index')
+            ->with('success', 'Cập nhật thông tin cá nhân thành công!');
     }
 }

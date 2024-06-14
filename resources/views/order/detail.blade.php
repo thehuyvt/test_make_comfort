@@ -114,6 +114,7 @@
 @push('js')
     <script>
         $(document).ready(function(){
+            let orderId = {{$order->id}};
             $("#printButton").click(function(){
                 var printContents = $("#printOrder").html();
                 var originalContents = $("body").html();
@@ -121,7 +122,29 @@
                 $("body").html(printContents);
                 window.print();
                 $("body").html(originalContents);
+
+                processOrder(orderId);
             });
+
+            function processOrder(orderId) {
+                $.ajax({
+                    url: "{{ route('orders.process-order', '') }}/" + orderId,
+                    type: "POST",
+                    data: {
+                        _token: '{{ csrf_token() }}' // Bao gồm CSRF token để bảo mật
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            alert('Đơn hàng đã chuyển sang trạng thái đã xử lý!');
+                        } else {
+                            alert('Thất bại');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert('An error occurred: ' + error);
+                    }
+                });
+            }
         });
     </script>
 @endpush

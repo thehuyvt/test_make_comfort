@@ -9,15 +9,15 @@
                 </div>
 
                 <div class="right-top-bar flex-w h-full">
-                    <a href="#" class="flex-c-m trans-04 p-lr-25">
-                        Ngày: {{now()->format('d/m/Y')}}
-                    </a>
+{{--                    <a href="#" class="flex-c-m trans-04 p-lr-25">--}}
+{{--                        Ngày: {{now()->format('d/m/Y')}}--}}
+{{--                    </a>--}}
 
                     @if(session()->has('customer_id'))
 
-                        <a href="{{route('customers.profile')}}" class=" flex-c-m trans-04 p-lr-25">
-                            Tài khoản
-                        </a>
+                        <a href="{{route('customers.profile')}}" class="flex-c-m trans-04 p-lr-25">Tài khoản</a>
+
+                        <a href="{{route('orders.history')}}" class="flex-c-m trans-04 p-lr-25">Lịch sử mua hàng</a>
 
 
                         <a href="{{route('customers.logout')}}" class="flex-c-m trans-04 p-lr-25">

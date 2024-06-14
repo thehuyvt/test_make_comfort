@@ -27,7 +27,6 @@ class UserController extends Controller
         $arr = array_map('ucfirst', $arr);
         $title = implode(' - ', $arr);
         $listStatus = UserStatusEnum::getArrayStatus();
-
         View::share('title', $title);
         View::share('listStatus', $listStatus);
     }

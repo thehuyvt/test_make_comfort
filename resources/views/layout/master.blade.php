@@ -84,9 +84,8 @@
 @stack('js')
 
 {{--<!-- third party js -->--}}
-<script src="{{asset('js/vendor/apexcharts.min.js')}}"></script>
 <script src="{{asset('js/vendor/jquery-jvectormap-1.2.2.min.js')}}"></script>
-{{--<script src="assets/js/vendor/jquery-jvectormap-world-mill-en.js"></script>--}}
+<script src="assets/js/vendor/jquery-jvectormap-world-mill-en.js"></script>
 {{--<!-- third party js ends -->--}}
 
 {{--<!-- demo app -->--}}

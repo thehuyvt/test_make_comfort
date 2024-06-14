@@ -144,9 +144,18 @@ class OrderController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateOrderRequest $request, Order $order)
+    public function update(UpdateOrderRequest $request, Order $order )
     {
         //
+    }
+
+    public function updateStatus(Order $order)
+    {
+        if($order->status === OrderStatusEnum::PENDING->value){
+            $order->status = OrderStatusEnum::PROCESSED->value;
+            $order->save();
+        }
+        return response()->json(['success' => true]);
     }
 
     /**

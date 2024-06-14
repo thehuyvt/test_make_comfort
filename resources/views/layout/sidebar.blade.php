@@ -66,27 +66,6 @@
                 </a>
             </li>
 
-            <li class="side-nav-item">
-                <a href="#" class="side-nav-link">
-                    <i class="mdi mdi-cart-outline"></i>
-                    <span> Thống kê</span>
-                </a>
-                <ul class="side-nav-second-level mm-collapse" aria-expanded="false">
-                    <li>
-                        <a href="{{route('statistical.get-revenue')}}">Thống kê doanh thu</a>
-                    </li>
-                    <li>
-                        <a href="2">Thống kê đơn hàng</a>
-                    </li>
-                    <li>
-                        <a href="3">Thống kê sản phẩm</a>
-                    </li>
-                    <li>
-                        <a href="4">Đơn hàng đã hủy</a>
-                    </li>
-                </ul>
-            </li>
-
         </ul>
         <!-- End Sidebar -->
 

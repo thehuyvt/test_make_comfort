@@ -39,7 +39,7 @@
             <label for="status">Trạng thái: </label>
             <select name="status">
                 @foreach($listStatus as $key => $status)
-                    <option value="{{$status->value}}">{{$key}}</option>
+                    <option value="{{$key}}">{{$status}}</option>
                 @endforeach
             </select>
         </div>

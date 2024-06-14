@@ -9,9 +9,8 @@ enum GenderEnum: int
     public static function getArrayGender()
     {
         return [
-            self::MALE->value => 'Male',
-            self::FE_MALE->value => 'Female',
-
+            self::MALE->value => 'Nam',
+            self::FE_MALE->value => 'Nữ',
         ];
     }
 

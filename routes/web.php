@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Customer\AuthCustomerController;
 use App\Http\Controllers\Customer\CartController;
 use App\Http\Controllers\Customer\CustomerController;
+use App\Http\Controllers\Customer\OrderCustomerController;
 use App\Http\Middleware\LoginAdminMiddleware;
 use App\Http\Middleware\LoginCustomerMiddleware;
 use App\Http\Middleware\RevalidateBackHistory;
@@ -63,13 +64,14 @@ Route::middleware([LoginAdminMiddleware::class, RevalidateBackHistory::class])->
         Route::get('edit/{order}', [OrderController::class, 'edit'])->name('edit');
         Route::put('update/{order}', [OrderController::class, 'update'])->name('update');
         Route::get('get-orders/{status}', [OrderController::class, 'getOrdersByStatus'])->name('get-orders-by-status');
-
+        Route::post('process-order/{order}', [OrderController::class, 'updateStatus'])->name('process-order');
     });
 
     Route::group(['prefix' => 'statistical', 'as'=>'statistical.'], function (){
-        Route::get('/sum-revenue', [StatisticalController::class, 'getRevenue'])->name('get-revenue');
-        Route::get('/sum-orders', [StatisticalController::class, 'getSumOrders'])->name('get-sum-orders');
-
+        Route::get('/', [StatisticalController::class, 'getData'])->name('data');
+        Route::get('/get-new-customer', [StatisticalController::class, 'getDataCustomer'])->name('new-customer');
+        Route::get('/get-order-chart', [StatisticalController::class, 'getDataOrderChart'])->name('order-chart');
+        Route::get('/get-top-products-sell', [StatisticalController::class, 'getTopProductSell'])->name('top-product-sell');
     });
 
 
@@ -87,6 +89,10 @@ Route::post('login', [AuthCustomerController::class, 'processLogin'])->name('cus
 Route::middleware([LoginCustomerMiddleware::class, RevalidateBackHistory::class])->group(function (){
     Route::get('profile', [AuthCustomerController::class, 'profile'])->name('customers.profile');
     Route::get('logout', [AuthCustomerController::class, 'logout'])->name('customers.logout');
+    Route::get('profile', [AuthCustomerController::class, 'editProfile'])->name('customers.profile');
+    Route::get('profile', [AuthCustomerController::class, 'editProfile'])->name('customers.profile');
+    Route::put('update-customer-profile/{customer}', [AuthCustomerController::class, 'updateProfile'])->name('customers.update-profile');
+
     Route::get('cart', [CartController::class, 'index'])->name('carts.index');
     Route::post('add-cart/{product}', [CartController::class, 'addProductToCart'])->name('carts.add-product-to-cart');
     Route::post('update-cart/{orderCartId}', [CartController::class, 'updateCart'])->name('carts.update-product');
@@ -94,6 +100,10 @@ Route::middleware([LoginCustomerMiddleware::class, RevalidateBackHistory::class]
     Route::get('sum-products-in-cart', [CartController::class, 'sumProductsInCart'])->name('carts.sum-products-in-cart');
     Route::post('check-out/{order}', [CartController::class, 'checkOut'])->name('carts.check-out');
     Route::get('list-products-in-cart', [CartController::class, 'listProductsInCart'])->name('carts.list-products-in-cart');
+
+    Route::get('shopping-history', [OrderCustomerController::class, 'history'])->name('orders.history');
+    Route::get('order-detail/{orderId}', [OrderCustomerController::class, 'detail'])->name('orders.detail');
+    Route::get('order-cancel/{orderId}', [OrderCustomerController::class, 'cancel'])->name('orders.cancel');
 });
 
 //Guest

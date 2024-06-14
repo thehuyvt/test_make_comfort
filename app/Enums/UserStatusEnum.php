@@ -10,7 +10,7 @@ enum UserStatusEnum: int
     {
         return [
             self::ACTIVE->value => 'Hoạt động',
-            self::ACTIVE->value => 'Dừng hoạt động',
+            self::STOP_ACTIVE->value => 'Dừng hoạt động',
         ];
     }
 

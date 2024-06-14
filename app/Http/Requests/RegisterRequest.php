@@ -59,7 +59,7 @@ class RegisterRequest extends FormRequest
             ],
             'gender'=>[
                 'required',
-                Rule::in(GenderEnum::getArrayGender()),
+//                Rule::in(GenderEnum::getArrayGender()),
             ],
             'status'=>[
                 Rule::in(UserStatusEnum::getArrayStatus()),

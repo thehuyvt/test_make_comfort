@@ -92,14 +92,14 @@
                             <div class="form-group">
                                 <label>Giới tính</label>
                                 <div class="form-check">
-                                    @foreach($genders as $key => $gender)
-                                        <input class="form-check-input" type="radio" name="gender" id="gender{{$gender->value}}"
-                                               value="{{$gender->value}}"
+                                    @foreach($genders as $key => $value)
+                                        <input class="form-check-input" type="radio" name="gender" id="gender{{$key}}"
+                                               value="{{$key}}"
                                                @if ($loop->first)
                                                    checked
                                             @endif>
-                                        <label class="form-check-label mr-5" for="gender{{$gender->value}}">
-                                            {{$key}}
+                                        <label class="form-check-label mr-5" for="gender{{$key}}">
+                                            {{$value}}
                                         </label>
                                     @endforeach
                                 </div>
