@@ -16,12 +16,16 @@ enum OrderPaymentMethodEnum: int
             self::COD->value => [
                 'name' => "Cod",
                 'description' => "Thanh toán khi nhận hàng",
-                ],
+            ],
         ];
     }
 
-    public static function getNamePaymentMethod($value)
+    public static function getNamePaymentMethod($value): string
     {
-        return self::getArrayPaymentMethod()[$value];
+        if(!$value){
+            return 'Không xác định';
+        }
+
+        return self::getArrayPaymentMethod()[$value]['name'];
     }
 }

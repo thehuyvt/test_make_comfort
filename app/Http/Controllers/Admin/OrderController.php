@@ -48,7 +48,7 @@ class OrderController extends Controller
             ->paginate(10);
 
         foreach ($orders as $order){
-            $order->payment_method = OrderPaymentMethodEnum::getNamePaymentMethod($order->payment_method)['name'];
+            $order->payment_method = OrderPaymentMethodEnum::getNamePaymentMethod($order->payment_method);
             $order->status = OrderStatusEnum::getNameStatus($order->status);
             $order->placed_at = date_format(date_create($order->placed_at), 'H:i-d/m/Y');
         }
@@ -75,7 +75,7 @@ class OrderController extends Controller
 //                ->with('error', 'Đơn hàng không tồn tại!');
 //        }
         foreach ($orders as $order){
-            $order->payment_method = OrderPaymentMethodEnum::getNamePaymentMethod($order->payment_method)['name'];
+            $order->payment_method = OrderPaymentMethodEnum::getNamePaymentMethod($order->payment_method);
             $order->status = OrderStatusEnum::getNameStatus($order->status);
             $order->placed_at = date_format(date_create($order->placed_at), 'H:i-d/m/Y');
             $order->total = number_format($order->total);
@@ -109,7 +109,7 @@ class OrderController extends Controller
         if (!$order){
             return redirect()->route('orders.index')->with('error', 'Đơn hàng không tồn tại!');
         }
-        $order->payment_method = OrderPaymentMethodEnum::getNamePaymentMethod($order->payment_method)['name'];
+        $order->payment_method = OrderPaymentMethodEnum::getNamePaymentMethod($order->payment_method);
         $order->status = OrderStatusEnum::getNameStatus($order->status);
         $orderProducts = OrderProduct::query()->with('variant.product')
             ->where('order_id', $order->id)
@@ -129,7 +129,7 @@ class OrderController extends Controller
         if (!$order){
             return redirect()->route('orders.index')->with('error', 'Đơn hàng không tồn tại!');
         }
-        $order->payment_method = OrderPaymentMethodEnum::getNamePaymentMethod($order->payment_method)['name'];
+        $order->payment_method = OrderPaymentMethodEnum::getNamePaymentMethod($order->payment_method);
         $order->status = OrderStatusEnum::getNameStatus($order->status);
         $orderProducts = OrderProduct::query()->with('variant.product')
             ->where('order_id', $order->id)

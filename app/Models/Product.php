@@ -26,6 +26,7 @@ class Product extends Model
     ];
     protected $cast = [
         'created_at' => 'datetime:d/m/Y',
+        'options' => 'json',
     ];
 
     // relations

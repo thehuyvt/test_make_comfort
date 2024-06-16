@@ -11,6 +11,10 @@ class Order extends Model
 
     protected $guarded = [];
 
+    protected $dates = [
+        'placed_at',
+    ];
+
     public function orderProducts()
     {
         return $this->hasMany(OrderProduct::class);

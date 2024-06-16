@@ -49,7 +49,16 @@
 @section('content')
     <div class="row">
         <div class="col-xl-5 col-lg-6">
-
+            <form id="search">
+                <input 
+                    type="date" 
+                    name="date" 
+                    class="form-control"
+                    value="{{ date('Y-m-d') }}" 
+                    id="date"
+                    onchange="getAnalytic()"
+                >
+            </form>
             <div class="row">
                 <div class="col-lg-6">
                     <div class="card widget-flat">
@@ -58,11 +67,11 @@
                                 <i class="mdi mdi-account-multiple widget-icon bg-primary-lighten text-primary"></i>
                             </div>
                             <h5 class="text-muted font-weight-normal mt-0" title="Number of Customers">Khách đăng ký mới</h5>
-                            <h3 class="mt-3 mb-3" id="total_customer">0</h3>
+                            <h3 class="mt-3 mb-3 text-analytic" id="total_customer">0</h3>
                             <p class="mb-0 text-muted">
-                                <span class="mr-2" id="total_customer-compare">0</span>
+                                <span class="mr-2 text-analytic" id="total_customer-compare">0</span>
                                 <br>
-                                <span class="text-nowrap since-time">So với tháng trước</span>
+                                <span class="text-nowrap since-time">So với hôm qua</span>
                             </p>
                         </div> <!-- end card-body-->
                     </div> <!-- end card-->
@@ -74,10 +83,10 @@
                             <div class="float-right">
                                 <i class="mdi mdi-cart-plus widget-icon bg-danger-lighten text-warning"></i>
                             </div>
-                            <h5 class="text-muted font-weight-normal mt-0" title="Number of Orders">Đơn hàng</h5>
-                            <h3 class="mt-3 mb-3" id="total_order">0</h3>
+                            <h5 class="text-muted font-weight-normal mt-0 " title="Number of Orders">Đơn hàng</h5>
+                            <h3 class="mt-3 mb-3 text-analytic" id="total_order">0</h3>
                             <p class="mb-0 text-muted">
-                                <span class="mr-2" id="total_order-compare">0</span>
+                                <span class="mr-2 text-analytic" id="total_order-compare">0</span>
                                 <br>
                                 <span class="text-nowrap since-time">So với hôm qua</span>
                             </p>
@@ -94,9 +103,9 @@
                                 <i class="mdi mdi-currency-usd widget-icon bg-info-lighten text-info"></i>
                             </div>
                             <h5 class="text-muted font-weight-normal mt-0" title="Average Revenue">Doanh thu</h5>
-                            <h3 class="mt-3 mb-3" id="total_revenue">0</h3>
+                            <h3 class="mt-3 mb-3 text-analytic" id="total_revenue">0</h3>
                             <p class="mb-0 text-muted">
-                                <span class="mr-2"  id="total_revenue-compare" ></span>
+                                <span class="mr-2 text-analytic" id="total_revenue-compare" >0</span>
                                 <br>
                                 <span class="text-nowrap since-time">So với hôm qua</span>
                             </p>
@@ -111,9 +120,9 @@
                                 <i class="mdi mdi-pulse widget-icon bg-warning-lighten text-danger"></i>
                             </div>
                             <h5 class="text-muted font-weight-normal mt-0" title="Growth">Đơn hủy</h5>
-                            <h3 class="mt-3 mb-3" id="total_cancel">0</h3>
+                            <h3 class="mt-3 mb-3 text-analytic" id="total_cancel">0</h3>
                             <p class="mb-0 text-muted">
-                                <span class="mr-2" id="total_cancel-compare">0</span>
+                                <span class="mr-2 text-analytic" id="total_cancel-compare">0</span>
                                 <br>
                                 <span class="text-nowrap since-time">So với hôm qua</span>
                             </p>
@@ -181,62 +190,64 @@
                 method: 'GET',
                 dataType: 'json',
                 success: function(data) {
-                    // Chuẩn bị dữ liệu cho biểu đồ
-                    var days = [];
-                    var totalOrderData = [];
-                    var totalCancelData = [];
-
-                    for (var date in data) {
-                        if (data.hasOwnProperty(date)) {
-                            days.push(data[date].date);
-                            totalOrderData.push(data[date].total_order);
-                            totalCancelData.push(data[date].total_cancel);
-                        }
-                    }
-
                     // Tạo biểu đồ Highcharts
                     Highcharts.chart('container', {
-                        title: {
-                            text: 'Biểu đồ thống kê đơn hàng 15 ngày gần nhất',
-                            align: 'left'
+                        chart: {
+                            type: 'column'
                         },
-                        yAxis: {
-                            title: {
-                                text: 'Đơn hàng'
-                            }
+                        title: {
+                            text: 'E-commerce Performance Metrics'
                         },
                         xAxis: {
-                            categories: days,
-                            accessibility: {
-                                rangeDescription: '15 ngày gần nhất'
-                            },
+                            categories: data.date,
+                            crosshair: true
                         },
-                        legend: {
-                            layout: 'vertical',
-                            align: 'right',
-                            verticalAlign: 'middle'
+                        yAxis: [{
+                            min: 0,
+                            title: {
+                                text: 'Count'
+                            }
+                        }, {
+                            title: {
+                                text: 'Conversion Rate (%)'
+                            },
+                            opposite: true
+                        }],
+                        tooltip: {
+                            shared: true
+                        },
+                        plotOptions: {
+                            column: {
+                                grouping: true
+                            }
                         },
                         series: [{
-                            name: 'Đơn hàng',
-                            data: totalOrderData
+                            name: 'Add to Cart',
+                            data: data.add_to_cart,
+                            tooltip: {
+                                valueSuffix: ' times'
+                            }
                         }, {
-                            name: 'Đơn hủy',
-                            data: totalCancelData
-                        }],
-                        responsive: {
-                            rules: [{
-                                condition: {
-                                    maxWidth: 500
-                                },
-                                chartOptions: {
-                                    legend: {
-                                        layout: 'horizontal',
-                                        align: 'center',
-                                        verticalAlign: 'bottom'
-                                    }
-                                }
-                            }]
-                        }
+                            name: 'Checkout',
+                            data: data.checkout,
+                            tooltip: {
+                                valueSuffix: ' times'
+                            }
+                        }, {
+                            name: 'Orders',
+                            data: data.order,
+                            tooltip: {
+                                valueSuffix: ' times'
+                            }
+                        }, {
+                            name: 'Conversion Rate',
+                            data: data.conversion_rate,
+                            type: 'spline',
+                            yAxis: 1,
+                            tooltip: {
+                                valueSuffix: ' %'
+                            }
+                        }]
                     });
                 },
                 error: function(xhr, status, error) {
@@ -246,12 +257,17 @@
 
             //Biểu đồ thống kê sa phẩm bán chạy
             getAnalytic();
-            getNewCustomers();
         });
 
         function getAnalytic() {
+            $('.text-analytic').text('0');
             $.ajax({
                 url: "{{ route('statistical.data') }}",
+                dataType: "json",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    date: $('#date').val()
+                },
                 type: "GET",
                 success: function (data) {
                     let todayData = data[0];
@@ -269,59 +285,26 @@
 
             let htmlCompare = '';
             let percentCompare = 0;
-            if(todayData[key] === 0 && yesterdayData[key] === 0){
+            if(todayData[key] === 0 || yesterdayData[key] === 0){
                 percentCompare = 0;
-            }else if(yesterdayData[key] === 0 || todayData[key] === 0){
-                percentCompare = '∞';
-            }else{
+            } else{
                 percentCompare = ((todayData[key] - yesterdayData[key]) / yesterdayData[key]) * 100;
                 percentCompare = percentCompare.toFixed(2);
             }
 
-            let classCompare = 'text-success';
-            if(percentCompare < 0 && key !== 'total_cancel') {
-                percentCompare = Math.abs(percentCompare);
-                htmlCompare = `<i class="mdi mdi-arrow-down-bold"></i>${percentCompare} %`;
-                classCompare = 'text-danger';
+            if (percentCompare >= 0) {
+                htmlCompare = `<i class="mdi mdi-arrow-up-bold"></i>${percentCompare}%`;
+                classCompare = 'text-success';
             }else {
-                if (percentCompare !== '∞') {
-                    htmlCompare = `<i class="mdi mdi-arrow-up-bold"></i>${percentCompare}%`;
-                }else {
-                    htmlCompare = `<i class="mdi mdi-arrow-down-bold"></i>+<span class="font-weight-normal font-24">${percentCompare}</span> %`;
-                    classCompare = 'text-danger';
-                }
+                htmlCompare = `<i class="mdi mdi-arrow-down-bold"></i>${percentCompare}%`;
+                classCompare = 'text-danger';
             }
             $(`#${key}-compare`).html(htmlCompare);
             $(`#${key}-compare`).addClass(classCompare);
         }
 
-        function getNewCustomers(){
-            $.ajax({
-                url: "{{ route('statistical.new-customer') }}",
-                type: "GET",
-                success: function (data) {
-                    let thisMonth = data[0];
-                    let lastMonth = data[1];
-                    $("#total_customer").text(thisMonth);
-                    let percentCompare = ((thisMonth - lastMonth) / lastMonth) * 100;
-                    percentCompare = percentCompare.toFixed(2);
-                    let classCompare = 'text-success';
-                    if(percentCompare < 0) {
-                        percentCompare = Math.abs(percentCompare);
-                        classCompare = 'text-danger';
-                        $("#total_customer-compare").html(`<i class="mdi mdi-arrow-down-bold"></i>${percentCompare}%`);
-                        $("#total_customer-compare").addClass(classCompare);
-                    }else{
-                        $("#total_customer-compare").html(`<i class="mdi mdi-arrow-up-bold"></i>${percentCompare}%`);
-                        $("#total_customer-compare").addClass(classCompare);
-                    }
-
-                }
-            })
-        }
-
         $.ajax({
-            url: 'http://test_make_comfort.test/statistical/get-top-products-sell',
+            url: "{{ route('statistical.top-product-sell') }}",
             type: 'GET',
             success: function (response) {
                 let totalQuantity = 0;
@@ -351,7 +334,7 @@
                         text: 'Sản phẩm bán chạy'
                     },
                     tooltip: {
-                        pointFormat: '{point.name}: <b>{point.quantity}</b> ({point.percentage:.1f}%)',
+                        pointFormat: '<b>{point.quantity}</b>',
                         valueSuffix: '%'
                     },
                     plotOptions: {

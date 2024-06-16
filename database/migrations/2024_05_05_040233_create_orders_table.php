@@ -21,8 +21,8 @@ return new class extends Migration
             $table->text('note');
             $table->tinyInteger('status');
             $table->integer('total');
-            $table->timestamp('approved_at');
-            $table->timestamp('placed_at');
+            $table->timestamp('approved_at')->nullable();
+            $table->timestamp('placed_at')->nullable();
             $table->timestamps();
         });
     }

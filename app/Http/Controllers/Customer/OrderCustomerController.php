@@ -17,7 +17,7 @@ class OrderCustomerController extends Controller
             ->where('status', '!=', 1)
             ->orderByDesc('placed_at')->get();
         foreach ($orders as $order){
-            $order->payment_method = OrderPaymentMethodEnum::getNamePaymentMethod($order->payment_method)['name'];
+            $order->payment_method = OrderPaymentMethodEnum::getNamePaymentMethod($order->payment_method);
             $order->status_name = OrderStatusEnum::getNameStatus($order->status);
             $order->placed_at = date_format(date_create($order->placed_at), 'H:i-d/m/Y');
             $order->total = number_format($order->total);
@@ -36,7 +36,7 @@ class OrderCustomerController extends Controller
             return redirect()->route('orders.history')
                 ->with('error', 'Đơn hàng không tồn tại!');
         }
-        $order->payment_method = OrderPaymentMethodEnum::getNamePaymentMethod($order->payment_method)['name'];
+        $order->payment_method = OrderPaymentMethodEnum::getNamePaymentMethod($order->payment_method);
         $order->status_name = OrderStatusEnum::getNameStatus($order->status);
         $order->placed_at = date_format(date_create($order->placed_at), 'H:i-d/m/Y');
         $order->total = number_format($order->total);

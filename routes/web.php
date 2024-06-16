@@ -69,7 +69,6 @@ Route::middleware([LoginAdminMiddleware::class, RevalidateBackHistory::class])->
 
     Route::group(['prefix' => 'statistical', 'as'=>'statistical.'], function (){
         Route::get('/', [StatisticalController::class, 'getData'])->name('data');
-        Route::get('/get-new-customer', [StatisticalController::class, 'getDataCustomer'])->name('new-customer');
         Route::get('/get-order-chart', [StatisticalController::class, 'getDataOrderChart'])->name('order-chart');
         Route::get('/get-top-products-sell', [StatisticalController::class, 'getTopProductSell'])->name('top-product-sell');
     });

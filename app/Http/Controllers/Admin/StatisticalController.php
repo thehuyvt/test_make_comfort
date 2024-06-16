@@ -6,66 +6,42 @@ use App\Enums\OrderStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\Order;
+use App\Models\OrderProduct;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Calculation\DateTimeExcel\Month;
+use Illuminate\Support\Str;
 
 class StatisticalController extends Controller
 {
     public function getData(Request $request)
     {
-        $startDate = Carbon::now()->startOfDay()->subDay(1);
-        $endDate = Carbon::now()->endOfDay();
+        $date = $request->date('date') ?? now();
+        $startDate = $date->clone()->startOfDay()->subDay();
+        $endDate = $date->clone()->endOfDay();
 
-        $data = Order::query()
+        $orders = Order::query()
             ->selectRaw('SUM(total) as total_revenue')
             ->selectRaw('COUNT(CASE WHEN status = ? THEN 1 END) as total_cancel', [OrderStatusEnum::CANCELLED->value])
             ->selectRaw('COUNT(CASE WHEN status != ? THEN 1 END) as total_order', [OrderStatusEnum::CANCELLED->value])
-            ->selectRaw('DATE(placed_at) as date')
             ->whereBetween('placed_at', [$startDate, $endDate])
-            ->groupBy('date')
-            ->orderByDesc('date')
+            ->groupByRaw('DATE(placed_at)')
+            ->orderByDesc('placed_at')
             ->get();
 
-        if ($data->count() == 1) {
-            $arr = [];
-            $arr['total_revenue'] = 0;
-            $arr['total_cancel'] = 0;
-            $arr['total_order'] = 0;
-            if ($data[0]->date === $endDate->format('Y-m-d')) {
-                $arr['date'] = $startDate->toDate()->format('Y-m-d');
-                $data->add($arr);
-            }else{
-                $arr['date'] = $endDate->toDate()->format('Y-m-d');
-                $data->prepend($arr);
-            }
+        $customers = Customer::query()
+            ->selectRaw('COUNT(*) as total_customer')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->groupByRaw('DATE(created_at)')
+            ->orderByDesc('created_at')
+            ->get();
+
+        $data = [];
+        foreach($orders as $key => $order) {
+            $data[$key] = $order;
+            $data[$key]->total_customer = $customers[$key]->total_customer ?? 0;
         }
-
-        return response()->json($data->toArray());
-    }
-
-    public function getDataCustomer()
-    {
-        $lastMonthStartDate = Carbon::now()->subMonth()->startOfMonth();
-        $lastMonthEndDate = Carbon::now()->subMonth()->endOfMonth();
-
-        // Tính toán khoảng thời gian cho tháng này
-        $thisMonthStartDate = Carbon::now()->startOfMonth();
-        $thisMonthEndDate = Carbon::now()->endOfMonth();
-
-        // Lấy dữ liệu cho tháng trước
-        $lastMonthData = Customer::query()
-            ->whereBetween('created_at', [$lastMonthStartDate, $lastMonthEndDate])
-            ->count();
-
-        // Lấy dữ liệu cho tháng này
-        $thisMonthData = Customer::query()
-            ->whereBetween('created_at', [$thisMonthStartDate, $thisMonthEndDate])
-            ->count();
-
-        // Kết hợp dữ liệu của tháng này và tháng trước
-        $data = [$thisMonthData, $lastMonthData];
 
         return response()->json($data);
     }
@@ -78,43 +54,42 @@ class StatisticalController extends Controller
         $allDates = [];
         $currentDate = $startDate->copy();
         while ($currentDate->lte($endDate)) {
-            $allDates[$currentDate->format('Y-m-d')] = [
-                'total_revenue' => 0,
-                'total_cancel' => 0,
+            $date = $currentDate->format('m-d');
+            $allDates[$date] = [
+                'total_add_to_cart' => 0,
+                'total_checkout' => 0,
                 'total_order' => 0,
-                'date' => $currentDate->format('Y-m-d'),
+                'conversion_rate' => 0,
+                'date' => $date
             ];
             $currentDate->addDay();
         }
 
         // Lấy dữ liệu từ cơ sở dữ liệu
         $data = Order::query()
-            ->selectRaw('SUM(total) as total_revenue')
-            ->selectRaw('COUNT(CASE WHEN status = ? THEN 1 END) as total_cancel', [OrderStatusEnum::CANCELLED->value])
-            ->selectRaw('COUNT(CASE WHEN status != ? THEN 1 END) as total_order', [OrderStatusEnum::CANCELLED->value])
+            ->selectRaw('COUNT(*) as total_add_to_cart')
+            ->selectRaw('COUNT(CASE WHEN status > ? THEN 1 END) as total_checkout', [OrderStatusEnum::DRAFT->value])
+            ->selectRaw('COUNT(CASE WHEN status > ? THEN 1 END) as total_order', [OrderStatusEnum::ORDERING->value])
             ->selectRaw('DATE(placed_at) as date')
             ->whereBetween('placed_at', [$startDate, $endDate])
             ->groupBy('date')
-            ->orderByDesc('date')
-            ->get();
+            ->get();    
 
-        // Chuyển đổi dữ liệu lấy được từ cơ sở dữ liệu thành mảng với khóa là ngày
-        $dataByDate = $data->keyBy('date');
-
-        // Kết hợp dữ liệu từ cơ sở dữ liệu với danh sách tất cả các ngày
-        foreach ($allDates as $key => &$values) {
-            $date = $values['date'];
-            $key = Carbon::createFromFormat('Y-m-d', $date)->format('d-m');
-            unset($allDates[$date]);
-            $allDates[$key] = $values;
-            if (isset($dataByDate[$date])) {
-                $values['total_revenue'] = $dataByDate[$date]->total_revenue;
-                $values['total_cancel'] = $dataByDate[$date]->total_cancel;
-                $values['total_order'] = $dataByDate[$date]->total_order;
-            }
+        foreach($data as $each){
+            $date = Str::after($each->date, '-');
+            $allDates[$date]['total_add_to_cart'] = $each->total_add_to_cart;
+            $allDates[$date]['total_checkout'] = $each->total_checkout;
+            $allDates[$date]['total_order'] = $each->total_order;
+            $allDates[$date]['conversion_rate'] = $each->total_order / $each->total_add_to_cart * 100;
         }
 
-        return response()->json($allDates);
+        $arr['add_to_cart'] = array_column($allDates, 'total_add_to_cart');
+        $arr['checkout'] = array_column($allDates, 'total_checkout');
+        $arr['order'] = array_column($allDates, 'total_order');
+        $arr['conversion_rate'] = array_column($allDates, 'conversion_rate');
+        $arr['date'] = array_keys($allDates);
+
+        return response()->json($arr);
     }
 
     public function getTopProductSell()
@@ -122,15 +97,20 @@ class StatisticalController extends Controller
         $startDate = Carbon::now()->startOfDay()->subDay(14);
         $endDate = Carbon::now()->endOfDay();
 
-        $bestSellingProducts = DB::table('order_products')
+        $bestSellingProducts = OrderProduct::query()
+            ->select([
+                'products.id',
+                'products.name',
+            ])
+            ->selectRaw('SUM(order_products.quantity) as total_quantity')
             ->join('product_variants', 'order_products.product_variant_id', '=', 'product_variants.id')
             ->join('products', 'product_variants.product_id', '=', 'products.id')
             ->join('orders', 'order_products.order_id', '=', 'orders.id')
-            ->select('products.id', 'products.name', DB::raw('SUM(order_products.quantity) as total_quantity'))
             ->whereBetween('orders.placed_at', [$startDate, $endDate])
-            ->groupBy('products.id', 'products.name')
+            ->groupBy('products.id')
             ->orderByDesc('total_quantity')
             ->get();
-        return response()->json($bestSellingProducts->toArray());
+
+        return response()->json($bestSellingProducts);
     }
 }
