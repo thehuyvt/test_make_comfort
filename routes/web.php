@@ -111,3 +111,5 @@ Route::get('register', [AuthCustomerController::class, 'register'])->name('custo
 Route::post('register', [AuthCustomerController::class, 'processRegister'])->name('customers.process-register');
 Route::get('/', [CustomerController::class, 'index'])->name('customers.index');
 Route::get('/product/{slug}', [CustomerController::class, 'productDetail'])->name('product.detail');
+Route::get('/all-products', [CustomerController::class, 'allProducts'])->name('customers.all-product');
+Route::get('/list-products', [CustomerController::class, 'listProducts'])->name('customers.list-products');

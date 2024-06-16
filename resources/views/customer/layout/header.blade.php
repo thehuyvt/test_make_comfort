@@ -54,7 +54,7 @@
                         </li>
 
                         <li>
-                            <a href="#">Sản phẩm</a>
+                            <a href="{{route('customers.all-product')}}">Sản phẩm</a>
                         </li>
 
                         <li>

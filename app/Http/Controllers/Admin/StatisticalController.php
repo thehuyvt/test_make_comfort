@@ -33,8 +33,7 @@ class StatisticalController extends Controller
             $arr['total_revenue'] = 0;
             $arr['total_cancel'] = 0;
             $arr['total_order'] = 0;
-
-            if ($data[0]->date == $endDate) {
+            if ($data[0]->date === $endDate->format('Y-m-d')) {
                 $arr['date'] = $startDate->toDate()->format('Y-m-d');
                 $data->add($arr);
             }else{
