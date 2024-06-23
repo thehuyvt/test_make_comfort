@@ -66,7 +66,7 @@ class AuthCustomerController extends Controller
             }
             return redirect($request->url ?? URL::route('customers.index'));
         }else{
-            return redirect()->route('auth-customer.login')
+            return redirect()->route('customers.login')
                 ->with('message', 'Email hoặc mật khẩu của bạn không chính xác!');
         }
 

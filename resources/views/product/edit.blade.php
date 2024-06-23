@@ -315,10 +315,10 @@
                     return true;
                 },
                 success:    function() {
-                    $.notify("Cập nhật thành công", "success");
+                    $.notify("Lưu thông tin thành công", "success");
                 },
                 error: function(response){
-                    $.notify("Không thành công, vui lòng kiểm tra", "error");
+                    $.notify("Không thành công, vui lòng kiểm tra lại thông tin sản phẩm!", "error");
 
                     $('.error-message').remove();
 

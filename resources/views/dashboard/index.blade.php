@@ -50,11 +50,11 @@
     <div class="row">
         <div class="col-xl-5 col-lg-6">
             <form id="search">
-                <input 
-                    type="date" 
-                    name="date" 
+                <input
+                    type="date"
+                    name="date"
                     class="form-control"
-                    value="{{ date('Y-m-d') }}" 
+                    value="{{ date('Y-m-d') }}"
                     id="date"
                     onchange="getAnalytic()"
                 >
@@ -137,46 +137,35 @@
             <div class="card">
                 <div class="card-body">
                     <figure class="highcharts-figure">
-                        <div id="container"></div>
+                        <div id="container-1"></div>
                         <p class="highcharts-description">
-                            Biểu đồ thống kê số lượng đơn hàng trong 15 ngày gần đây
+                            Bảng thống kê các sản phẩm bán trong 15 ngày gần nhất
                         </p>
                     </figure>
-            </div> <!-- end card-->
+                </div> <!-- end card-->
 
-        </div> <!-- end col -->
+            </div> <!-- end col -->
+        </div>
+         <!-- end col -->
         </div>
     </div>
 
 {{--        Biểu đồ thống kê doanh thu và sản phẩm bán chạy--}}
         <div class="row">
-            <div class="col-xl-5  col-lg-6">
-                <div class="card">
-                    <div class="card-body">
-                        <figure class="highcharts-figure">
-                            <div id="container-1"></div>
-                            <p class="highcharts-description">
-                                Bảng thống kê các sản phẩm bán trong 15 ngày gần nhất
-                            </p>
-                        </figure>
-                    </div> <!-- end card-->
-
-                </div> <!-- end col -->
-            </div> <!-- end col -->
-
-            <div class="col-xl-7  col-lg-6">
+            <div class="col-xl-12  col-lg-12">
                 <div class="card">
                     <div class="card-body">
                         <figure class="highcharts-figure">
                             <div id="container"></div>
                             <p class="highcharts-description">
-                                Biểu đồ thống kê số lượng đơn hàng cùng với doanh thu.
+                                Biểu đồ thống kê số lượng đơn hàng trong 15 ngày gần đây
                             </p>
                         </figure>
-                    </div> <!-- end card-->
-
-                </div> <!-- end col -->
+                    </div>
+                </div> <!-- end card-->
             </div>
+             <!-- end col -->
+        </div>
 @endsection
 
 @push('js')
@@ -196,7 +185,7 @@
                             type: 'column'
                         },
                         title: {
-                            text: 'E-commerce Performance Metrics'
+                            text: 'Biểu đồ thống kê đơn hàng'
                         },
                         xAxis: {
                             categories: data.date,
@@ -209,7 +198,7 @@
                             }
                         }, {
                             title: {
-                                text: 'Conversion Rate (%)'
+                                text: 'Tỷ lệ chuyển đổi(%)'
                             },
                             opposite: true
                         }],
@@ -222,25 +211,25 @@
                             }
                         },
                         series: [{
-                            name: 'Add to Cart',
+                            name: 'Thêm vào giỏ hàng',
                             data: data.add_to_cart,
                             tooltip: {
-                                valueSuffix: ' times'
+                                valueSuffix: ' đơn'
                             }
                         }, {
-                            name: 'Checkout',
+                            name: 'Thanh toán',
                             data: data.checkout,
                             tooltip: {
-                                valueSuffix: ' times'
+                                valueSuffix: ' đơn'
                             }
                         }, {
-                            name: 'Orders',
+                            name: 'Đơn hàng',
                             data: data.order,
                             tooltip: {
-                                valueSuffix: ' times'
+                                valueSuffix: ' đơn'
                             }
                         }, {
-                            name: 'Conversion Rate',
+                            name: 'Tỷ lệ chuyển đổi',
                             data: data.conversion_rate,
                             type: 'spline',
                             yAxis: 1,

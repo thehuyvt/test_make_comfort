@@ -7,11 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
 use App\Models\Category;
-use App\Models\Customer;
 use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\URL;
-use Ramsey\Uuid\Type\Integer;
+
 
 class CustomerController extends Controller
 {
@@ -81,14 +79,49 @@ class CustomerController extends Controller
 
 
     //Trang danh sach san pham
-    public function allProducts()
+    public function allProducts(Request $request)
     {
+        $listProducts = Product::query()
+            ->with([
+                'category',
+            ])
+            ->when($request->category, function ($q,$value){
+                if ($value !== '*'){
+                    $q->where('category_id', $value);
+                }
+            })
+            ->when($request->price, function ($q,$value){
+                $prices = explode('-',$value);
+                foreach ($prices as $key => $price){
+                    $prices[$key] = (int)$price;
+                }
+                $q->whereBetween('sale_price', $prices);
+            })
+            ->when($request->key, function ($q,$value){
+                $q->where(function($q) use ($value){
+                    $q->orWhere('name', 'like', '%'.$value.'%');
+                    $q->orWhere('slug', 'like', '%'.$value.'%');
+                    $q->orWhere('id', 'like', '%'.$value.'%');
+                });
+            })
+            ->when($request->sort, function ($q,$value){
+                $q->orderBy('price', $value);
+            })
+            ->orderByDesc('id')
+            ->paginate(12);
+        foreach ($listProducts as $product){
+            $product->price = $product->sale_price;
+            $product->sale_price = number_format($product->sale_price);
+            $product->old_price = number_format($product->old_price);
+        }
+        $listProducts->appends($request->all()); //add params to request
         $categories = Category::query()->get();
 
         return view('customer.product.index',[
+            'listProducts' => $listProducts,
             'categories'=> $categories,
         ]);
-        return view('customer.product.all-product');
+//        return view('customer.product.all-product');
     }
 
     //Data san pham do vao trang sam pham

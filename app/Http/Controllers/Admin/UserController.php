@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\UserRoleEnum;
 use App\Enums\UserStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
@@ -33,10 +34,6 @@ class UserController extends Controller
     public function index()
     {
         $users = User::query()->where('role', '!=', 1)->paginate(10);
-//        foreach ($users as $user){
-////            $user->active = $user->active === 1 ?'Đang hoạt động':"Dừng hoạt động";
-//            $user->created_at = date_format($user->created_at, "d/m/Y");
-//        }
         return view('user.index', [
             'users' => $users,
         ]);
@@ -47,7 +44,6 @@ class UserController extends Controller
      */
     public function create()
     {
-//        dd($listStatus);
         return view('user.create');
     }
 
@@ -62,10 +58,10 @@ class UserController extends Controller
             'password'=> Hash::make($request->password),
             'phone_number'=> $request->phone_number,
             'status'=> $request->status,
-            'role' => 2,
+            'role' => UserRoleEnum::EMPLOYEE->value,
         ]);
         return redirect()->route('users.index')
-            ->with('Thêm nhân viên thành công!');
+            ->with('success','Thêm nhân viên thành công!');
     }
 
 
@@ -109,6 +105,7 @@ class UserController extends Controller
             'phone_number'=> $request->phone_number,
             'status'=> $request->status,
         ]);
+
         return redirect()->route('users.index')
             ->with('success', 'Sửa thông tin nhân viên thành công!');
     }
@@ -118,7 +115,7 @@ class UserController extends Controller
      */
     public function changePassword()
     {
-        return \view('user.change-password');
+        return view('user.change-password');
     }
 
     public function updatePassword(UpdatePasswordRequest $request)

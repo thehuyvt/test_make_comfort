@@ -4,15 +4,13 @@ namespace App\Enums;
 enum UserRoleEnum: int
 {
     case ADMIN = 1;
-    case MANAGER = 2;
-    case SHIPPER = 3;
+    case EMPLOYEE = 2;
 
     public static function getArrayGender()
     {
         return [
             self::ADMIN->value => 'Quản trị viên',
-            self::MANAGER->value => 'Quản lý shop',
-            self::SHIPPER->value => 'Nhân viên giao hàng',
+            self::EMPLOYEE->value => 'Nhân viên',
         ];
     }
 

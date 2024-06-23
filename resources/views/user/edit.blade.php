@@ -19,11 +19,6 @@
             <input type="email" id="email" name="email" class="form-control" value="{{$user->email}}">
         </div>
 
-{{--        <div class="form-group">--}}
-{{--            <label for="password">Mật khẩu</label>--}}
-{{--            <input type="password" id="password" name="password" class="form-control" value="{{$user->password}}">--}}
-{{--        </div>--}}
-
         <div class="form-group">
             <label for="name">Tên nhân viên</label>
             <input type="text" id="name" name="name" class="form-control" value="{{$user->name}}">
@@ -37,14 +32,14 @@
         <div class="form-group">
             <label for="status">Trạng thái: </label>
             <select name="status">
-                @foreach($listStatus as $key => $status)
-                    <option value="{{$status->value}}"
-                            @if($user->status === $status->value) selected @endif>
-                        {{$key}}</option>
+                @foreach($listStatus as $value => $status)
+                    <option value="{{$value}}"
+                            @if($user->status === $value) selected @endif>
+                        {{$status}}</option>
                 @endforeach
             </select>
         </div>
 
-        <input class="btn btn-block btn-primary" type="submit" value="Sửa nhân viêsn">
+        <input class="btn btn-block btn-primary" type="submit" value="Sửa thông tin nhân viên">
     </form>
 @endsection

@@ -72,39 +72,39 @@
             <!-- Sản phẩm -->
             <div class="col-md-9 col-lg-9">
                 <div class="row" id="product-list">
-{{--                    @foreach($listProducts as $product)--}}
-{{--                        <div class="col-sm-6 col-md-6 col-lg-4 p-b-35 isotope-item product-item {{$product->category_id}}" data-price="{{$product->price}}">--}}
-{{--                            <!-- Block2 - Chi tiết sản phẩm -->--}}
-{{--                            <div class="block2">--}}
-{{--                                <div class="block2-pic hov-img0">--}}
-{{--                                    <img src="{{asset('storage')."/".$product->thumb}}" alt="IMG-PRODUCT">--}}
+                    @foreach($listProducts as $product)
+                        <div class="col-sm-6 col-md-6 col-lg-4 p-b-35 isotope-item product-item {{$product->category_id}}" data-price="{{$product->price}}">
+                            <!-- Block2 - Chi tiết sản phẩm -->
+                            <div class="block2">
+                                <div class="block2-pic hov-img0">
+                                    <img src="{{asset('storage')."/".$product->thumb}}" height="360" alt="IMG-PRODUCT">
 
-{{--                                    <a href="{{route('product.detail', $product->slug)}}" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04" data-product-slug="{{$product->slug}}">--}}
-{{--                                        Chi tiết--}}
-{{--                                    </a>--}}
-{{--                                </div>--}}
+                                    <a href="{{route('product.detail', $product->slug)}}" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04" data-product-slug="{{$product->slug}}">
+                                        Chi tiết
+                                    </a>
+                                </div>
 
-{{--                                <div class="block2-txt flex-w flex-t p-t-14">--}}
-{{--                                    <div class="block2-txt-child1 flex-col-l ">--}}
-{{--                                        <a href="{{route('product.detail', $product->slug)}}" style="font-size: 16px" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">--}}
-{{--                                            {{$product->name}}--}}
-{{--                                        </a>--}}
+                                <div class="block2-txt flex-w flex-t p-t-14">
+                                    <div class="block2-txt-child1 flex-col-l ">
+                                        <a href="{{route('product.detail', $product->slug)}}" style="font-size: 16px" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+                                            {{$product->name}}
+                                        </a>
 
-{{--                                        <span class="stext-105 cl3" style="color: #f53d2d">--}}
-{{--									Giá: {{$product->sale_price}}đ <span class="ml-2" style="color:#333;text-decoration: line-through;font-size:12px">{{$product->old_price}}đ</span>--}}
-{{--								</span>--}}
-{{--                                    </div>--}}
+                                        <span class="stext-105 cl3" style="color: #f53d2d">
+									Giá: {{$product->sale_price}}đ <span class="ml-2" style="color:#333;text-decoration: line-through;font-size:12px">{{$product->old_price}}đ</span>
+								</span>
+                                    </div>
 
-{{--                                    <div class="block2-txt-child2 flex-r p-t-3">--}}
-{{--                                        <a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">--}}
-{{--                                            <img class="icon-heart1 dis-block trans-04" src="{{asset('customer/images/icons/icon-heart-01.png')}}" alt="ICON">--}}
-{{--                                            <img class="icon-heart2 dis-block trans-04 ab-t-l" src="{{asset('customer/images/icons/icon-heart-02.png')}}" alt="ICON">--}}
-{{--                                        </a>--}}
-{{--                                    </div>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    @endforeach--}}
+                                    <div class="block2-txt-child2 flex-r p-t-3">
+                                        <a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
+                                            <img class="icon-heart1 dis-block trans-04" src="{{asset('customer/images/icons/icon-heart-01.png')}}" alt="ICON">
+                                            <img class="icon-heart2 dis-block trans-04 ab-t-l" src="{{asset('customer/images/icons/icon-heart-02.png')}}" alt="ICON">
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -123,7 +123,7 @@
                             <!-- Block2 - Chi tiết sản phẩm -->
                             <div class="block2">
                                 <div class="block2-pic hov-img0">
-                                    <img src="{{ asset('storage/') }}/${product.thumb}" alt="IMG-PRODUCT">
+                                    <img src="{{ asset('storage/') }}/${product.thumb}" height="360" alt="IMG-PRODUCT">
 
                                     <a href="/product/${product.slug}" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04" data-product-slug="${product.slug}">
                                         Chi tiết

@@ -8,6 +8,7 @@ use App\Models\Customer;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Calculation\DateTimeExcel\Month;
@@ -36,7 +37,6 @@ class StatisticalController extends Controller
             ->groupByRaw('DATE(created_at)')
             ->orderByDesc('created_at')
             ->get();
-
         $data = [];
         foreach($orders as $key => $order) {
             $data[$key] = $order;
@@ -46,7 +46,7 @@ class StatisticalController extends Controller
         return response()->json($data);
     }
 
-    public function getDataOrderChart(Request $request): \Illuminate\Http\JsonResponse
+    public function getDataOrderChart(Request $request): JsonResponse
     {
         $startDate = Carbon::now()->startOfDay()->subDay(14);
         $endDate = Carbon::now()->endOfDay();
@@ -73,7 +73,7 @@ class StatisticalController extends Controller
             ->selectRaw('DATE(placed_at) as date')
             ->whereBetween('placed_at', [$startDate, $endDate])
             ->groupBy('date')
-            ->get();    
+            ->get();
 
         foreach($data as $each){
             $date = Str::after($each->date, '-');
@@ -88,7 +88,6 @@ class StatisticalController extends Controller
         $arr['order'] = array_column($allDates, 'total_order');
         $arr['conversion_rate'] = array_column($allDates, 'conversion_rate');
         $arr['date'] = array_keys($allDates);
-
         return response()->json($arr);
     }
 

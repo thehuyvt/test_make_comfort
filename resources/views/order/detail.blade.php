@@ -1,7 +1,10 @@
 @extends('layout.master')
 
 @section('content')
-    <button id="printButton" class="btn btn-success mb-2"><i
+    <button id="accessButton" class="btn btn-success mb-2"></i>
+        Xác nhận đơn
+    </button>
+    <button id="printButton" class="btn btn-secondary mb-2"><i
             class="mdi mdi-plus-circle mr-2"></i>
             In đơn hàng
     </button>
@@ -123,9 +126,12 @@
                 window.print();
                 $("body").html(originalContents);
 
-                processOrder(orderId);
             });
 
+
+            $("#accessButton").click(function(){
+                processOrder(orderId);
+            });
             function processOrder(orderId) {
                 $.ajax({
                     url: "{{ route('orders.process-order', '') }}/" + orderId,

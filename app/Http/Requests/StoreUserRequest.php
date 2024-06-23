@@ -50,7 +50,6 @@ class StoreUserRequest extends FormRequest
             ],
             'status'=>[
                 'required',
-                Rule::in(UserStatusEnum::getArrayStatus()),
             ]
         ];
     }
