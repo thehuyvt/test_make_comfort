@@ -54,14 +54,17 @@ class AuthCustomerController extends Controller
 
     public function processLogin(LoginRequest $request)
     {
-        $customer = Customer::query()->where('email', $request->email)->first();
+        $customer = Customer::query()
+            ->where('email', $request->email)
+            ->first();
         if ($customer && Hash::check($request->password, $customer->password)) {
+            if ($customer->status == 0) {
+                return redirect()->route('customers.login')
+                    ->with('message', 'Tài khoản của bạn đang bị khóa hãy liên hệ quản trị viên để được hỗ trợ!');
+            }
             session()->put('customer_id', $customer->id);
-            session()->put('customer_name', $customer->name);
-            session()->put('customer_email', $customer->email);
-            session()->put('customer_address', $customer->address);
-            session()->put('customer_phone_number', $customer->phone_number);
-            if ($request->url == URL::route('customers.login')||$request->url == URL::route('customers.register')) {
+            if ($request->url == URL::route('customers.login')
+                ||$request->url == URL::route('customers.register')) {
                 return redirect()->route('customers.index');
             }
             return redirect($request->url ?? URL::route('customers.index'));

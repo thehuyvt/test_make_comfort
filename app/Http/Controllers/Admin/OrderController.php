@@ -80,7 +80,7 @@ class OrderController extends Controller
             $order->placed_at = date_format(date_create($order->placed_at), 'H:i-d/m/Y');
             $order->total = number_format($order->total);
         }
-        return view('order.pending',[
+        return view('order.index',[
                 'orders' => $orders,
         ]);
     }

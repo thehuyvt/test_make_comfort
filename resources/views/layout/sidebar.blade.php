@@ -35,13 +35,13 @@
                         <a href="{{route('orders.index')}}">Tất cả các đơn</a>
                     </li>
                     <li>
-                        <a href="{{route('orders.get-orders-by-status', 3)}}">Đơn hàng chưa xử lý</a>
+                        <a href="{{route('orders.index').'?status=3'}}">Đơn hàng chưa xử lý</a>
                     </li>
                     <li>
-                        <a href="{{route('orders.get-orders-by-status', 4)}}">Đơn hàng đã xử lý</a>
+                        <a href="{{route('orders.index').'?status=4'}}">Đơn hàng đã xử lý</a>
                     </li>
                     <li>
-                        <a href="{{route('orders.get-orders-by-status', 6)}}">Đơn hàng đã hủy</a>
+                        <a href="{{route('orders.index').'?status=6'}}">Đơn hàng đã hủy</a>
                     </li>
                 </ul>
             </li>

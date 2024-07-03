@@ -19,7 +19,9 @@ class CustomerController extends Controller
     public function index()
     {
         $categories = Category::query()->get();
-        $products = Product::query()->limit(16)->get();
+        $products = Product::query()
+            ->where('status', '!=', ProductStatusEnum::DRAFT)
+            ->limit(16)->get();
         foreach ($products as $product){
             $product->sale_price = number_format($product->sale_price);
             $product->old_price = number_format($product->old_price);
@@ -85,6 +87,7 @@ class CustomerController extends Controller
             ->with([
                 'category',
             ])
+            ->where('status', '!=', ProductStatusEnum::DRAFT)
             ->when($request->category, function ($q,$value){
                 if ($value !== '*'){
                     $q->where('category_id', $value);
@@ -132,6 +135,7 @@ class CustomerController extends Controller
             ->with([
                 'category',
             ])
+            ->where('status', '!=', ProductStatusEnum::DRAFT)
             ->when($request->category, function ($q,$value){
                 if ($value !== '*'){
                     $q->where('category_id', $value);

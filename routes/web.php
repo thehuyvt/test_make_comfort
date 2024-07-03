@@ -77,6 +77,8 @@ Route::middleware([LoginAdminMiddleware::class, RevalidateBackHistory::class])->
     Route::group(['prefix' => 'management-customers', 'as'=>'management-customers.'], function (){
         Route::get('/', [ManagerCustomerController::class, 'index'])->name('index');
         Route::get('/{customerId}', [ManagerCustomerController::class, 'show'])->name('show');
+        Route::get('/edit/{customerId}', [ManagerCustomerController::class, 'edit'])->name('edit');
+        Route::put('/update/{customerId}', [ManagerCustomerController::class, 'update'])->name('update');
     });
 
 

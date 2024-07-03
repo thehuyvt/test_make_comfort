@@ -9,7 +9,7 @@
                         <div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
                             <div class="layer-slick1 animated visible-false" data-appear="fadeInDown" data-delay="0">
 								<span class="ltext-101 cl2 respon2">
-									Women Collection 2018
+									Thời trang nữ
 								</span>
                             </div>
 
@@ -21,7 +21,7 @@
 
                             <div class="layer-slick1 animated visible-false" data-appear="zoomIn" data-delay="1600">
                                 <a href="product.html" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
-                                    Shop Now
+                                   Mua sắm ngay
                                 </a>
                             </div>
                         </div>
@@ -33,7 +33,7 @@
                         <div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
                             <div class="layer-slick1 animated visible-false" data-appear="rollIn" data-delay="0">
 								<span class="ltext-101 cl2 respon2">
-									Men New-Season
+									Thời trang nam
 								</span>
                             </div>
 
@@ -45,7 +45,7 @@
 
                             <div class="layer-slick1 animated visible-false" data-appear="slideInUp" data-delay="1600">
                                 <a href="product.html" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
-                                    Shop Now
+                                    Mua sắm ngay
                                 </a>
                             </div>
                         </div>
@@ -57,7 +57,7 @@
                         <div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
                             <div class="layer-slick1 animated visible-false" data-appear="rotateInDownLeft" data-delay="0">
 								<span class="ltext-101 cl2 respon2">
-									Men Collection 2018
+									Bộ sưu tập 2024
 								</span>
                             </div>
 
@@ -69,7 +69,7 @@
 
                             <div class="layer-slick1 animated visible-false" data-appear="rotateIn" data-delay="1600">
                                 <a href="product.html" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
-                                    Shop Now
+                                    Mua sắm ngay
                                 </a>
                             </div>
                         </div>
@@ -127,8 +127,7 @@
             <div class="flex-w flex-sb-m p-b-52">
                 <div class="flex-w flex-l-m filter-tope-group m-tb-10">
                     <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1" data-filter="*">
-                        All Products
-                    </button>
+                        Tất cả sản phẩm                    </button>
                     @foreach($categories as $category)
                         <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".{{$category->id}}">
                             {{$category->name}}
@@ -140,7 +139,7 @@
                     <div class="flex-c-m stext-106 cl6 size-105 bor4 pointer hov-btn3 trans-04 m-tb-4 js-show-search">
                         <i class="icon-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-search"></i>
                         <i class="icon-close-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
-                        Search
+                        Tìm kiếm
                     </div>
                 </div>
 
@@ -181,7 +180,7 @@
                                 </div>
 
                                 <div class="block2-txt-child2 flex-r p-t-3">
-                                    <a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
+                                    <a href="#" class="btn-addwish-b2 dis-block pos-relative ">
                                         <img class="icon-heart1 dis-block trans-04" src="{{asset('customer/images/icons/icon-heart-01.png')}}" alt="ICON">
                                         <img class="icon-heart2 dis-block trans-04 ab-t-l" src="{{asset('customer/images/icons/icon-heart-02.png')}}" alt="ICON">
                                     </a>
@@ -194,7 +193,7 @@
 
             <!-- Load more -->
             <div class="flex-c-m flex-w w-full p-t-45">
-                <a href="#" class="flex-c-m stext-101 cl5 size-103 bg2 bor1 hov-btn1 p-lr-15 trans-04">
+                <a href="{{route('customers.all-product')}}" class="flex-c-m stext-101 cl5 size-103 bg2 bor1 hov-btn1 p-lr-15 trans-04">
                     Xem tất cả sản phẩm
                 </a>
             </div>

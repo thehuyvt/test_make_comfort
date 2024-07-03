@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Enums\OrderStatusEnum;
 use App\Enums\UserStatusEnum;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateCustomerRequest;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
@@ -75,5 +76,28 @@ class ManagerCustomerController extends Controller
         return view('manager_customer.detail', [
             'customer' => $customer
         ]);
+    }
+
+    public function edit($customerId)
+    {
+        $customer = Customer::query()->find($customerId);
+        if ($customer === null){
+            return redirect()->route('management-customers.index')->with('notify', 'Khách hàng không tồn tại!');
+        }
+        $listStatus = UserStatusEnum::getArrayStatus();
+        return view('manager_customer.edit', [
+            'customer' => $customer,
+            'listStatus' => $listStatus,
+        ]);
+    }
+
+    public function update(UpdateCustomerRequest $request, $customerId)
+    {
+        $customer = Customer::query()->find($customerId);
+        if ($customer === null){
+            return redirect()->route('management-customers.index')->with('notify', 'Khách hàng không tồn tại!');
+        }
+        $customer->update($request->all());
+        return redirect()->route('management-customers.index')->with('notify', 'Cập nhật thành công!');
     }
 }

@@ -61,7 +61,7 @@
                                 <td>{{number_format($customer->total_amount_bought)}}đ</td>
                                 <td>
                                     <a href="{{route('management-customers.show', $customer->id)}}" class="action-icon"> <i class="mdi mdi-eye"></i></a>
-                                    <a href="" class="action-icon"> <i class="mdi mdi-square-edit-outline"></i></a>
+                                    <a href="{{route('management-customers.edit', $customer->id)}}" class="action-icon"> <i class="mdi mdi-square-edit-outline"></i></a>
                                 </td>
                             </tr>
                         @endforeach
