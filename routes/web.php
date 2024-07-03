@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AuthAdminController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ManagerCustomerController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\StatisticalController;
@@ -71,6 +72,11 @@ Route::middleware([LoginAdminMiddleware::class, RevalidateBackHistory::class])->
         Route::get('/', [StatisticalController::class, 'getData'])->name('data');
         Route::get('/get-order-chart', [StatisticalController::class, 'getDataOrderChart'])->name('order-chart');
         Route::get('/get-top-products-sell', [StatisticalController::class, 'getTopProductSell'])->name('top-product-sell');
+    });
+
+    Route::group(['prefix' => 'management-customers', 'as'=>'management-customers.'], function (){
+        Route::get('/', [ManagerCustomerController::class, 'index'])->name('index');
+        Route::get('/{customerId}', [ManagerCustomerController::class, 'show'])->name('show');
     });
 
 

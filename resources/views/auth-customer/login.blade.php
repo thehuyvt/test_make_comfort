@@ -76,12 +76,12 @@
                             </div>
                             <input type="hidden" name="url" value="{{url()->previous()}}">
 
-                            <div class="form-group mb-3">
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="checkbox-signin" name="remember">
-                                    <label class="custom-control-label" for="checkbox-signin">Ghi nhớ tài khoản</label>
-                                </div>
-                            </div>
+{{--                            <div class="form-group mb-3">--}}
+{{--                                <div class="custom-control custom-checkbox">--}}
+{{--                                    <input type="checkbox" class="custom-control-input" id="checkbox-signin" name="remember">--}}
+{{--                                    <label class="custom-control-label" for="checkbox-signin">Ghi nhớ tài khoản</label>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
 
                             <div class="form-group mb-0 text-center">
                                 <button type="submit" class="btn btn-outline-dark" >Đăng nhập </button>

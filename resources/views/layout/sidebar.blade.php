@@ -65,7 +65,18 @@
                     <span> Danh sách nhân viên </span>
                 </a>
             </li>
-
+            <li class="side-nav-item">
+                <a href="{{route('management-customers.index')}}" class="side-nav-link">
+                    <i class="uil-chat-bubble-user"></i>
+                    <span> Danh sách khách hàng </span>
+                </a>
+            </li>
+            <li class="side-nav-item">
+                <a href="2" class="side-nav-link">
+                    <i class="uil-chart-bar-alt"></i>
+                    <span> Thống kê doanh thu </span>
+                </a>
+            </li>
         </ul>
         <!-- End Sidebar -->
 

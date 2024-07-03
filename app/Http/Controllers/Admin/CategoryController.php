@@ -19,9 +19,9 @@ class CategoryController extends Controller
         $this->model = new Category();
 
         $routeName = Route::currentRouteName();
-        $arr = explode('.', $routeName);
-        $arr = array_map('ucfirst', $arr);
-        $title = implode(' - ', $arr);
+//        $arr = explode('.', $routeName);
+//        $arr = array_map('ucfirst', $arr);
+        $title = "Loại sản phẩm";
 
         View::share('title', $title);
     }

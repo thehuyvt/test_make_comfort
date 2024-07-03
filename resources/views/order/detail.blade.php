@@ -1,9 +1,12 @@
+@php use App\Enums\OrderStatusEnum @endphp
 @extends('layout.master')
 
 @section('content')
-    <button id="accessButton" class="btn btn-success mb-2"></i>
-        Xác nhận đơn
-    </button>
+    @if($order->status !== OrderStatusEnum::PROCESSED->value)
+        <button id="accessButton" class="btn btn-success mb-2"></i>
+            Xác nhận đơn
+        </button>
+    @endif
     <button id="printButton" class="btn btn-secondary mb-2"><i
             class="mdi mdi-plus-circle mr-2"></i>
             In đơn hàng
