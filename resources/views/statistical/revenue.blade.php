@@ -1,49 +1,135 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Revenue Chart</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-<h1>Revenue Chart</h1>
-<canvas id="revenueChart"></canvas>
+@extends('layout.master')
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const startDate = '2024-01-01'; // Example start date
-        const endDate = '2024-12-31'; // Example end date
+@push('css')
+    <style>
+        .highcharts-figure,
+        .highcharts-data-table table {
+            min-width: 310px;
+            max-width: 800px;
+            margin: 1em auto;
+        }
 
-        fetch(`statistical/revenue-data?start_date=${startDate}&end_date=${endDate}`)
-            .then(response => response.json())
-            .then(data => {
-                const labels = data.daily_revenue.map(item => item.date);
-                const revenues = data.daily_revenue.map(item => item.total);
+        #container {
+            height: 400px;
+        }
 
-                const ctx = document.getElementById('revenueChart').getContext('2d');
-                new Chart(ctx, {
-                    type: 'line', // Use 'bar' for bar chart
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Daily Revenue',
-                            data: revenues,
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
+        .highcharts-data-table table {
+            font-family: Verdana, sans-serif;
+            border-collapse: collapse;
+            border: 1px solid #ebebeb;
+            margin: 10px auto;
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .highcharts-data-table caption {
+            padding: 1em 0;
+            font-size: 1.2em;
+            color: #555;
+        }
+
+        .highcharts-data-table th {
+            font-weight: 600;
+            padding: 0.5em;
+        }
+
+        .highcharts-data-table td,
+        .highcharts-data-table th,
+        .highcharts-data-table caption {
+            padding: 0.5em;
+        }
+
+        .highcharts-data-table thead tr,
+        .highcharts-data-table tr:nth-child(even) {
+            background: #f8f8f8;
+        }
+
+        .highcharts-data-table tr:hover {
+            background: #f1f7ff;
+        }
+    </style>
+@endpush
+
+@section('content')
+    <figure class="highcharts-figure">
+        <div id="container"></div>
+        <p class="highcharts-description">
+            Biểu đồ doanh thu hàng tháng và trạng thái đơn hàng. Nhấp vào các cột để xem chi tiết doanh thu.
+        </p>
+    </figure>
+@endsection
+
+@push('js')
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/data.js"></script>
+    <script src="https://code.highcharts.com/modules/drilldown.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Data passed from the controller
+            var monthlyRevenueData = {!! $monthlyRevenueData !!};
+            var detailRevenue = {!! $detailRevenue !!};
+            // Create the chart
+            Highcharts.chart('container', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    align: 'left',
+                    text: 'Doanh thu hàng tháng'
+                },
+                subtitle: {
+                    align: 'left',
+                    text: 'Click các cột để xem số chi tiết doanh thu của tháng'
+                },
+                accessibility: {
+                    announceNewData: {
+                        enabled: true
+                    }
+                },
+                xAxis: {
+                    type: 'category'
+                },
+                yAxis: {
+                    title: {
+                        text: 'Tổng doanh thu (VND)'
+                    }
+                },
+                legend: {
+                    enabled: false
+                },
+                plotOptions: {
+                    series: {
+                        borderWidth: 0,
+                        dataLabels: {
+                            enabled: true,
+                            format: '{point.y:,.0f}đ'
                         }
                     }
-                });
-            })
-            .catch(error => console.error('Error fetching data:', error));
-    });
-</script>
+                },
+                tooltip: {
+                    headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                    pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:,.0f}₫</b><br/>'
+                },
+                series: [
+                    {
+                        name: 'Doanh thu',
+                        colorByPoint: true,
+                        data: monthlyRevenueData
 
+                    }
+                ],
+                drilldown: {
+                    breadcrumbs: {
+                        position: {
+                            align: 'right'
+                        }
+                    },
+                    series: detailRevenue
+                }
+            });
+        });
+    </script>
+@endpush

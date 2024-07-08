@@ -72,6 +72,7 @@ Route::middleware([LoginAdminMiddleware::class, RevalidateBackHistory::class])->
         Route::get('/', [StatisticalController::class, 'getData'])->name('data');
         Route::get('/get-order-chart', [StatisticalController::class, 'getDataOrderChart'])->name('order-chart');
         Route::get('/get-top-products-sell', [StatisticalController::class, 'getTopProductSell'])->name('top-product-sell');
+        Route::get('/get-revenue', [StatisticalController::class, 'getRevenue'])->name('revenue');
     });
 
     Route::group(['prefix' => 'management-customers', 'as'=>'management-customers.'], function (){
@@ -120,3 +121,5 @@ Route::get('/', [CustomerController::class, 'index'])->name('customers.index');
 Route::get('/product/{slug}', [CustomerController::class, 'productDetail'])->name('product.detail');
 Route::get('/all-products', [CustomerController::class, 'allProducts'])->name('customers.all-product');
 Route::get('/list-products', [CustomerController::class, 'listProducts'])->name('customers.list-products');
+Route::get('/about', [CustomerController::class, 'about'])->name('customers.about');
+Route::get('/contact', [CustomerController::class, 'contact'])->name('customers.contact');

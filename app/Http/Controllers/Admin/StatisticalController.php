@@ -11,11 +11,17 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use PhpOffice\PhpSpreadsheet\Calculation\DateTimeExcel\Month;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 
 class StatisticalController extends Controller
 {
+    public function __construct()
+    {
+        $title = 'Thống kê';
+        View::share('title', $title);
+    }
+
     public function getData(Request $request)
     {
         $date = $request->date('date') ?? now();
@@ -38,7 +44,7 @@ class StatisticalController extends Controller
             ->orderByDesc('created_at')
             ->get();
         $data = [];
-        foreach($orders as $key => $order) {
+        foreach ($orders as $key => $order) {
             $data[$key] = $order;
             $data[$key]->total_customer = $customers[$key]->total_customer ?? 0;
         }
@@ -75,7 +81,7 @@ class StatisticalController extends Controller
             ->groupBy('date')
             ->get();
 
-        foreach($data as $each){
+        foreach ($data as $each) {
             $date = Str::after($each->date, '-');
             $allDates[$date]['total_add_to_cart'] = $each->total_add_to_cart;
             $allDates[$date]['total_checkout'] = $each->total_checkout;
@@ -111,5 +117,58 @@ class StatisticalController extends Controller
             ->get();
 
         return response()->json($bestSellingProducts);
+    }
+
+    public function getRevenue()
+    {
+        $year = Carbon::now()->year;
+
+        // Truy vấn dữ liệu doanh thu hàng tháng và trạng thái đơn hàng
+        $monthlyRevenue = DB::table('orders')
+            ->select(
+                DB::raw('MONTH(placed_at) as month'),
+                DB::raw('SUM(total) as total'),
+                DB::raw('SUM(CASE WHEN status != ' . OrderStatusEnum::DRAFT->value . ' THEN 1 ELSE 0 END) as total_orders'),
+                DB::raw('SUM(CASE WHEN status = ' . OrderStatusEnum::CANCELLED->value . ' THEN 1 ELSE 0 END) as cancelled_orders'),
+                DB::raw('SUM(CASE WHEN status = ' . OrderStatusEnum::CANCELLED->value . ' THEN total ELSE 0 END) as cancelled_revenue'),
+                DB::raw('SUM(CASE WHEN status = ' . OrderStatusEnum::PENDING->value . ' THEN total ELSE 0 END) as pending_revenue'),
+                DB::raw('SUM(CASE WHEN status = ' . OrderStatusEnum::PROCESSED->value . ' THEN total ELSE 0 END) as successful_revenue')
+            )
+            ->whereYear('placed_at', $year)
+            ->groupBy(DB::raw('MONTH(placed_at)'))
+            ->get();
+
+        // Tạo dữ liệu cho biểu đồ Highcharts
+        $monthlyRevenueData = [];
+        foreach ($monthlyRevenue as $data) {
+            $monthName = 'Tháng ' . $data->month;
+            $monthlyRevenueData[] = [
+                'name' => $monthName,
+                'y' => (int)$data->total,
+                'drilldown' => $monthName,
+            ];
+            $successRevenueData[$monthName] = (int)$data->successful_revenue;
+            $cancelledRevenueData[$monthName] = (int)$data->cancelled_revenue;
+            $pendingRevenueData[$monthName] = (int)$data->pending_revenue;
+        }
+
+        $detailRevenue = [];
+        foreach ($monthlyRevenueData as $data) {
+            $month = $data['name'];
+            $detailRevenue[] = [
+                'name' => $month,
+                'id' => $month,
+                'data' => [
+                    ['Đơn hoàn thành', $successRevenueData[$month]],
+                    ['Đơn chưa hoàn thành', $pendingRevenueData[$month]],
+                    ['Đơn bị hủy', $cancelledRevenueData[$month]]
+                ]
+            ];
+        }
+//        dd($monthlyRevenue);
+        return view('statistical.revenue', [
+            'monthlyRevenueData' => json_encode($monthlyRevenueData),
+            'detailRevenue' => json_encode($detailRevenue),
+        ]);
     }
 }

@@ -168,4 +168,14 @@ class CustomerController extends Controller
         $listProducts->appends($request->all()); //add params to request
         return response()->json(['listProducts' => $listProducts]);
     }
+
+    public function about()
+    {
+        return view('customer.about');
+    }
+
+    public function contact()
+    {
+        return view('customer.contact');
+    }
 }

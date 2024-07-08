@@ -64,7 +64,8 @@ class AuthCustomerController extends Controller
             }
             session()->put('customer_id', $customer->id);
             if ($request->url == URL::route('customers.login')
-                ||$request->url == URL::route('customers.register')) {
+                ||$request->url == URL::route('customers.register'))
+            {
                 return redirect()->route('customers.index');
             }
             return redirect($request->url ?? URL::route('customers.index'));

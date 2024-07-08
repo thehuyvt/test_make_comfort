@@ -72,7 +72,7 @@
                 </a>
             </li>
             <li class="side-nav-item">
-                <a href="2" class="side-nav-link">
+                <a href="{{route('statistical.revenue')}}" class="side-nav-link">
                     <i class="uil-chart-bar-alt"></i>
                     <span> Thống kê doanh thu </span>
                 </a>

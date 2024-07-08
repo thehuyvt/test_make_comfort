@@ -58,11 +58,11 @@
                         </li>
 
                         <li>
-                            <a href="#">Về chúng tôi</a>
+                            <a href="{{route('customers.about')}}">Về chúng tôi</a>
                         </li>
 
                         <li>
-                            <a href="#">Liên hệ</a>
+                            <a href="{{route('customers.contact')}}">Liên hệ</a>
                         </li>
                     </ul>
                 </div>
