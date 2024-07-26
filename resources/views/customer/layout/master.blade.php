@@ -67,7 +67,10 @@
 {{--                        Total: $75.00--}}
                     </div>
 
-                    <div class="header-cart-buttons">
+                    <div class="header-cart-buttons flex-w w-full">
+                        <a href="{{route('carts.detail')}}" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-r-8 m-b-10">
+                            Giỏ hàng
+                        </a>
                         <a href="{{route("carts.index")}}" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10">
                             Thanh toán
                         </a>

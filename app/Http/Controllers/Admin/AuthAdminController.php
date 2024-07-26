@@ -14,11 +14,11 @@ class AuthAdminController extends Controller
 {
     public function __construct()
     {
-        $routeName = Route::currentRouteName();
-        $arr = explode('.', $routeName);
-        $arr = array_map('ucfirst', $arr);
-        $title = implode(' - ', $arr);
-
+//        $routeName = Route::currentRouteName();
+//        $arr = explode('.', $routeName);
+//        $arr = array_map('ucfirst', $arr);
+//        $title = implode(' - ', $arr);
+        $title = 'Trang chủ';
         View::share('title', $title);
     }
 
@@ -47,11 +47,6 @@ class AuthAdminController extends Controller
                 if ($user->status === 0){
                     return redirect()->route('admin.login')->with('message', 'Tài khoản của bạn đã bị khóa, liên hệ với quản trị viên để được giúp đỡ!');
                 }
-
-                //Ghi nho tai khoan
-//                if (!empty($request->remember)){
-//                    cookie()
-//                }
                 return redirect()->route('dashboard');
             }else{
                 return redirect()->route('admin.login')->with('message', 'Email hoặc mật khẩu không chính xác!');
@@ -61,7 +56,6 @@ class AuthAdminController extends Controller
             return redirect()->route('admin.login')->with('message', 'Email hoặc mật khẩu không chính xác!');
         }
     }
-
     public function logout()
     {
         session()->flush();

@@ -20,7 +20,10 @@ class CartController extends Controller
         $customerId = session()->get('customer_id');
         $order = Order::query()
             ->where('customer_id', $customerId)
-            ->where('status', OrderStatusEnum::DRAFT)
+            ->where(function ($query) {
+                $query->where('status', OrderStatusEnum::DRAFT)
+                    ->orWhere('status', OrderStatusEnum::ORDERING);
+            })
             ->first();
 
         if(!$order) {
@@ -40,14 +43,53 @@ class CartController extends Controller
             ->where('order_id', $order->id)
             ->get();
 
+        $order->status = OrderStatusEnum::ORDERING;
+        $order->save();
+
         $listPaymentMethods = OrderPaymentMethodEnum::getArrayPaymentMethod();
-        return view('customer.cart',[
+        return view('customer.checkout',[
                     'listProducts' => $listProducts,
                     'order' => $order,
                     'listPaymentMethods' => $listPaymentMethods,
                 ]
         );
     }
+
+    public function cartDetail()
+    {
+        $customerId = session()->get('customer_id');
+        $order = Order::query()
+            ->where('customer_id', $customerId)
+            ->where(function ($query) {
+                $query->where('status', OrderStatusEnum::DRAFT)
+                    ->orWhere('status', OrderStatusEnum::ORDERING);
+            })
+            ->first();
+
+        if(!$order) {
+            $customer = Customer::find($customerId);
+
+            $order = Order::create([
+                'customer_id' => $customerId,
+                'status' => OrderStatusEnum::DRAFT,
+                'name' => $customer->name,
+                'address' => $customer->address,
+                'phone_number' => $customer->phone_number,
+                'total' => 0,
+            ]);
+        }
+
+        $listProducts = OrderProduct::query()->with(['variant.product'])
+            ->where('order_id', $order->id)
+            ->get();
+
+        return view('customer.cart',[
+                'listProducts' => $listProducts,
+                'order' => $order,
+            ]
+        );
+    }
+
     public function addProductToCart(Request $request, Product $product)
     {
         $variantKey = implode('-', $request->input('options'));
@@ -72,7 +114,10 @@ class CartController extends Controller
         $order = Order::query()
             ->with('orderProducts')
             ->where('customer_id', $customerId)
-            ->where('status', OrderStatusEnum::DRAFT)
+            ->where(function ($query) {
+                $query->where('status', OrderStatusEnum::DRAFT)
+                    ->orWhere('status', OrderStatusEnum::ORDERING);
+            })
             ->first();
 
         if(!$order) {
@@ -169,7 +214,10 @@ class CartController extends Controller
     public function sumProductsInCart()
     {
         $order = Order::query()->where('customer_id', session()->get('customer_id'))
-            ->where('status', OrderStatusEnum::DRAFT)->first();
+            ->where(function ($query) {
+                $query->where('status', OrderStatusEnum::DRAFT)
+                    ->orWhere('status', OrderStatusEnum::ORDERING);
+            })->first();
         if (!$order) {
             return response()
                 ->json([
@@ -206,7 +254,10 @@ class CartController extends Controller
     public function listProductsInCart()
     {
         $order = Order::query()->where('customer_id', session()->get('customer_id'))
-            ->where('status', OrderStatusEnum::DRAFT)->first();
+            ->where(function ($query) {
+                $query->where('status', OrderStatusEnum::DRAFT)
+                    ->orWhere('status', OrderStatusEnum::ORDERING);
+            })->first();
         if (!$order) {
             return response()
                 ->json([

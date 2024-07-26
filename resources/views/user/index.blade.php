@@ -27,6 +27,7 @@
                     @if($user->status !== 1) <span class="badge badge-danger">Dừng hoạt động</span> @endif
                 </td>
                 <td  class="table-action">
+                    <a href="{{route('users.show', $user->id)}}" class="action-icon"> <i class="mdi mdi-eye"></i></a>
                     <a href="{{route('users.edit', $user->id)}}" class="action-icon"> <i class="mdi mdi-pencil"></i></a>
                 </td>
             </tr>

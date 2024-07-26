@@ -9,9 +9,9 @@
                 </div>
 
                 <div class="right-top-bar flex-w h-full">
-{{--                    <a href="#" class="flex-c-m trans-04 p-lr-25">--}}
-{{--                        Ngày: {{now()->format('d/m/Y')}}--}}
-{{--                    </a>--}}
+                    <a href="#" class="flex-c-m trans-04 p-lr-25">
+                        Ngày: {{now()->format('d/m/Y')}}
+                    </a>
 
                     @if(session()->has('customer_id'))
 
@@ -49,7 +49,7 @@
                 <!-- Menu desktop -->
                 <div class="menu-desktop">
                     <ul class="main-menu">
-                        <li class="active-menu">
+                        <li class="">
                             <a href="{{route('customers.index')}}">Trang chủ</a>
                         </li>
 

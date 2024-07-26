@@ -22,26 +22,17 @@
                         <td>{{$order->placed_at}}</td>
                         <td>
                             @switch($order->status)
-                                @case(2)
-                                    <span class="badge badge-secondary">{{ $order->status_name }}</span>
-                                    @break
                                 @case(3)
                                     <span class="badge badge-warning">{{$order->status_name }}</span>
                                     @break
                                 @case(4)
-                                    <span class="badge badge-info">{{ $order->status_name}}</span>
+                                    <span class="badge badge-success">{{ $order->status_name}}</span>
                                     @break
                                 @case(5)
-                                    <span class="badge badge-warning">{{ $order->status_name }}</span>
+                                    <span class="badge badge-secondary">{{ $order->status_name }}</span>
                                     @break
                                 @case(6)
                                     <span class="badge badge-danger">{{$order->status_name }}</span>
-                                    @break
-                                @case(7)
-                                    <span class="badge badge-primary">{{ $order->status_name}}</span>
-                                    @break
-                                @case(8)
-                                    <span class="badge badge-success">{{ $order->status_name }}</span>
                                     @break
                                 @default
                                     <span class="badge badge-secondary">Không rõ</span>

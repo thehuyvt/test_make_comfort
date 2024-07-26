@@ -105,4 +105,6 @@
     </div>
     <!-- end row -->
 @endsection
+@push('js')
 
+@endpush

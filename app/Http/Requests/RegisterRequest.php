@@ -99,7 +99,6 @@ class RegisterRequest extends FormRequest
             'address.string' => 'Địa chỉ phải là một chuỗi ký tự.',
 
             'gender.required' => 'Giới tính là bắt buộc.',
-//            'gender.in' => 'Giới tính không hợp lệ.',
 
             'status.in' => 'Trạng thái không hợp lệ.',
         ];

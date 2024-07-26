@@ -31,10 +31,10 @@ class StatisticalController extends Controller
         $orders = Order::query()
             ->selectRaw('SUM(total) as total_revenue')
             ->selectRaw('COUNT(CASE WHEN status = ? THEN 1 END) as total_cancel', [OrderStatusEnum::CANCELLED->value])
-            ->selectRaw('COUNT(CASE WHEN status != ? THEN 1 END) as total_order', [OrderStatusEnum::CANCELLED->value])
-            ->whereBetween('placed_at', [$startDate, $endDate])
-            ->groupByRaw('DATE(placed_at)')
-            ->orderByDesc('placed_at')
+            ->selectRaw('COUNT(CASE WHEN status >= ? THEN 1 END) as total_order', [OrderStatusEnum::ORDERING->value])
+            ->whereBetween('updated_at', [$startDate, $endDate])
+            ->groupByRaw('DATE(updated_at)')
+            ->orderByDesc('updated_at')
             ->get();
 
         $customers = Customer::query()
@@ -76,8 +76,8 @@ class StatisticalController extends Controller
             ->selectRaw('COUNT(*) as total_add_to_cart')
             ->selectRaw('COUNT(CASE WHEN status > ? THEN 1 END) as total_checkout', [OrderStatusEnum::DRAFT->value])
             ->selectRaw('COUNT(CASE WHEN status > ? THEN 1 END) as total_order', [OrderStatusEnum::ORDERING->value])
-            ->selectRaw('DATE(placed_at) as date')
-            ->whereBetween('placed_at', [$startDate, $endDate])
+            ->selectRaw('DATE(updated_at) as date')
+            ->whereBetween('updated_at', [$startDate, $endDate])
             ->groupBy('date')
             ->get();
 
@@ -131,6 +131,7 @@ class StatisticalController extends Controller
                 DB::raw('SUM(CASE WHEN status != ' . OrderStatusEnum::DRAFT->value . ' THEN 1 ELSE 0 END) as total_orders'),
                 DB::raw('SUM(CASE WHEN status = ' . OrderStatusEnum::CANCELLED->value . ' THEN 1 ELSE 0 END) as cancelled_orders'),
                 DB::raw('SUM(CASE WHEN status = ' . OrderStatusEnum::CANCELLED->value . ' THEN total ELSE 0 END) as cancelled_revenue'),
+                DB::raw('SUM(CASE WHEN status = ' . OrderStatusEnum::REJECT->value . ' THEN total ELSE 0 END) as rejected_revenue'),
                 DB::raw('SUM(CASE WHEN status = ' . OrderStatusEnum::PENDING->value . ' THEN total ELSE 0 END) as pending_revenue'),
                 DB::raw('SUM(CASE WHEN status = ' . OrderStatusEnum::PROCESSED->value . ' THEN total ELSE 0 END) as successful_revenue')
             )
@@ -148,7 +149,7 @@ class StatisticalController extends Controller
                 'drilldown' => $monthName,
             ];
             $successRevenueData[$monthName] = (int)$data->successful_revenue;
-            $cancelledRevenueData[$monthName] = (int)$data->cancelled_revenue;
+            $cancelledRevenueData[$monthName] = (int)$data->cancelled_revenue + (int)$data->rejected_revenue;
             $pendingRevenueData[$monthName] = (int)$data->pending_revenue;
         }
 
@@ -161,11 +162,10 @@ class StatisticalController extends Controller
                 'data' => [
                     ['Đơn hoàn thành', $successRevenueData[$month]],
                     ['Đơn chưa hoàn thành', $pendingRevenueData[$month]],
-                    ['Đơn bị hủy', $cancelledRevenueData[$month]]
+                    ['Đơn bị hủy và từ chối', $cancelledRevenueData[$month]]
                 ]
             ];
         }
-//        dd($monthlyRevenue);
         return view('statistical.revenue', [
             'monthlyRevenueData' => json_encode($monthlyRevenueData),
             'detailRevenue' => json_encode($detailRevenue),

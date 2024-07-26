@@ -46,7 +46,7 @@ class ProductController extends Controller
                     $q->orWhere('id', 'like', '%'.$value.'%');
                 });
             })
-            ->paginate(10);
+            ->paginate(5);
         foreach ($listProducts as $product){
             $product->status = ProductStatusEnum::getNameStatus($product->status);
         }
@@ -65,13 +65,17 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $product = new $this->model;
-        $product->status = ProductStatusEnum::DRAFT;
-        $product->name = 'Draft '.time();
-        $product->slug = Str::random();
-        $product->save();
+        $productDraft = Product::query()->where('status', ProductStatusEnum::DRAFT)->first();
+        if (!$productDraft){
+            $product = new $this->model;
+            $product->status = ProductStatusEnum::DRAFT;
+            $product->name = 'Draft '.time();
+            $product->slug = Str::random();
+            $product->save();
+            return redirect()->route('products.edit', $product);
+        }
 
-        return redirect()->route('products.edit', $product);
+        return redirect()->route('products.edit', $productDraft);
     }
 
 
@@ -143,7 +147,9 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         $categories = Category::query()->get();
-        $listStatus = ProductStatusEnum::getArrayStatus();
+        $listStatus = array_filter(ProductStatusEnum::getArrayStatus(), function ($status){
+            return $status !== ProductStatusEnum::getNameStatus(ProductStatusEnum::DRAFT->value);
+        });
         return view('product.edit', [
             'product' => $product,
             'categories'=> $categories,
@@ -172,8 +178,4 @@ class ProductController extends Controller
         return $options;
     }
 
-    public function search()
-    {
-
-    }
 }

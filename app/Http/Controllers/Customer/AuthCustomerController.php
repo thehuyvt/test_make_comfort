@@ -63,6 +63,7 @@ class AuthCustomerController extends Controller
                     ->with('message', 'Tài khoản của bạn đang bị khóa hãy liên hệ quản trị viên để được hỗ trợ!');
             }
             session()->put('customer_id', $customer->id);
+            session()->put('customer_name', $customer->name);
             if ($request->url == URL::route('customers.login')
                 ||$request->url == URL::route('customers.register'))
             {

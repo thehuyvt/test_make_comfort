@@ -13,26 +13,17 @@
                 <p><strong>Ngày Đặt:</strong> {{ $order->placed_at }}</p>
                 <p><strong>Trạng Thái:</strong>
                     @switch($order->status)
-                        @case(2)
-                            <span class="badge badge-secondary">{{ $order->status_name }}</span>
-                            @break
                         @case(3)
                             <span class="badge badge-warning">{{$order->status_name }}</span>
                             @break
                         @case(4)
-                            <span class="badge badge-info">{{ $order->status_name}}</span>
+                            <span class="badge badge-success">{{ $order->status_name}}</span>
                             @break
                         @case(5)
-                            <span class="badge badge-warning">{{ $order->status_name }}</span>
+                            <span class="badge badge-secondary">{{ $order->status_name }}</span>
                             @break
                         @case(6)
                             <span class="badge badge-danger">{{$order->status_name }}</span>
-                            @break
-                        @case(7)
-                            <span class="badge badge-primary">{{ $order->status_name}}</span>
-                            @break
-                        @case(8)
-                            <span class="badge badge-success">{{ $order->status_name }}</span>
                             @break
                         @default
                             <span class="badge badge-secondary">Không rõ</span>
@@ -101,8 +92,8 @@
         </div>
 
         <!-- Modal -->
-        <div class="modal fade" id="confirmCancelModal" tabindex="-1" role="dialog" aria-labelledby="confirmCancelModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
+        <div class="modal fade" id="confirmCancelModal"  tabindex="-1" role="dialog" aria-labelledby="confirmCancelModalLabel" aria-hidden="true">
+            <div class="modal-dialog" style="margin-top: 100px;"  role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="confirmCancelModalLabel">Xác Nhận Hủy Đơn Hàng</h5>
@@ -114,8 +105,8 @@
                         Bạn có chắc chắn muốn hủy đơn hàng này không?
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                        <a href="{{ route('orders.cancel', $order->id) }}" class="btn btn-danger">Xác Nhận Hủy</a>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                        <a href="{{ route('orders.cancel', $order->id) }}" class="btn btn-danger">Xác Nhận</a>
                     </div>
                 </div>
             </div>

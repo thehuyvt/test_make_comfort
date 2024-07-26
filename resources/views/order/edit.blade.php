@@ -14,17 +14,26 @@
                         <div class="form-group">
                             <label for="name">Tên:</label>
                             <input type="text" id="name" name="name" class="form-control" value="{{ $order->name }}" required>
+                            @error('name')
+                            <span id="name-error" class="error text-danger" style="display: block">{{$message}}</span>
+                            @enderror
                         </div>
 
                         <div class="form-group">
                             <label for="address">Địa chỉ:</label>
 
                             <input type="text" id="address" name="address" class="form-control" value="{{ $order->address }}" required>
+                            @error('address')
+                            <span id="name-error" class="error text-danger" style="display: block">{{$message}}</span>
+                            @enderror
                         </div>
 
                         <div class="form-group">
                             <label for="phone_number">Số điện thoại:</label>
                             <input type="text" id="phone_number" name="phone_number" class="form-control" value="{{ $order->phone_number }}" required>
+                            @error('phone_number')
+                            <span id="name-error" class="error text-danger" style="display: block">{{$message}}</span>
+                            @enderror
                         </div>
                         <div class="form-group">
                             <label for="payment_method">Phương thức thanh toán:</label>
@@ -50,7 +59,7 @@
                                 <th>Số lượng</th>
                                 <th>Giá</th>
                                 <th>Tổng</th>
-                                <th>Hành động</th>
+{{--                                <th>Hành động</th>--}}
                             </tr>
                             </thead>
                             <tbody id="list-order-product">
@@ -61,51 +70,34 @@
                                         {{ $orderProduct->variant->product->name }}
                                     </td>
                                     <td>
-                                        @foreach($orderProduct->variant->product->options as $key => $option)
-                                            <label for="{{$key}}">{{$key}}: </label>
-                                            <select name="{{$key}}" class="mr-2">
-                                                @foreach($option as $value)
-                                                    <option value="{{ $value }}" @selected($value === $orderProduct->variant->key)>
-                                                        {{ $value }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        @endforeach
+                                        {{$orderProduct->variant->key}}
+{{--                                        @foreach($orderProduct->variant->product->options as $key => $options)--}}
+{{--                                            <label for="{{$key}}">{{$key}}: </label>--}}
+{{--                                            @foreach($options as $value)--}}
+{{--                                                @if($value === $orderProduct->variant->key)--}}
+{{--                                                    {{ $value }}--}}
+{{--                                                @endif--}}
+{{--                                            @endforeach--}}
+{{--                                        @endforeach--}}
                                     </td>
                                     <td>
-                                        <input type="number" name="quantity" min="1" class="form-control w-50" value="{{ $orderProduct->quantity }}">
+                                        <p>{{ $orderProduct->quantity }}</p>
                                     </td>
                                     <td>{{ number_format($orderProduct->price) }}</td>
                                     <td>{{ number_format($orderProduct->quantity * $orderProduct->price) }}</td>
-                                    <td>
-{{--                                        <a href="" class="action-icon">--}}
-{{--                                            <i class="mdi mdi-square-edit-outline"></i>--}}
+{{--                                    <td>--}}
+{{--                                        <a href="#" class="action-icon">--}}
+{{--                                            <i class="mdi mdi-delete"></i>--}}
 {{--                                        </a>--}}
-                                        <a href="#" class="action-icon">
-                                            <i class="mdi mdi-delete"></i>
-                                        </a>
-                                    </td>
+{{--                                    </td>--}}
                                 </tr>
                             @endforeach
-                            <tr>
-                                <td>
-                                    <input type="text" id="product-name" name="name" class="form-control">
-                                </td>
-                            </tr>
-                            </tbody>
-
-                            <caption>
-                                <button type="button" id="btn_add_product" class="btn btn-outline-dark d-block mx-auto">
-                                    <i class="mdi mdi-plus-circle mr-2"></i>
-                                    Thêm sản phẩm
-                                </button>
-                            </caption>
                         </table>
                     </div>
                     <!-- end table-responsive -->
                 </div>
             </div>
-        </div> <!-- end col -->S
+        </div> <!-- end col -->
     </div>
 @endsection
 

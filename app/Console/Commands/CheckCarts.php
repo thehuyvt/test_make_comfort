@@ -42,9 +42,8 @@ class CheckCarts extends Command
                 //Xóa sản phẩm ở giỏ hàng
                 $orderProduct->delete();
             }
-            if ($cart->orderProducts->isEmpty()) {
-                $cart->delete();
-            }
+            $cart->total = 0;
+            $cart->save();
         }
 
     }

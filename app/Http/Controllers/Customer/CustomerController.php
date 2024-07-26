@@ -84,9 +84,7 @@ class CustomerController extends Controller
     public function allProducts(Request $request)
     {
         $listProducts = Product::query()
-            ->with([
-                'category',
-            ])
+            ->with(['category',])
             ->where('status', '!=', ProductStatusEnum::DRAFT)
             ->when($request->category, function ($q,$value){
                 if ($value !== '*'){
@@ -112,11 +110,13 @@ class CustomerController extends Controller
             })
             ->orderByDesc('id')
             ->paginate(12);
+
         foreach ($listProducts as $product){
             $product->price = $product->sale_price;
             $product->sale_price = number_format($product->sale_price);
             $product->old_price = number_format($product->old_price);
         }
+//        dd($listProducts);
         $listProducts->appends($request->all()); //add params to request
         $categories = Category::query()->get();
 

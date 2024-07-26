@@ -7,11 +7,10 @@ enum OrderStatusEnum: int
     case ORDERING = 2;// tiến hành đặt đơn và thanh toán
     case PENDING = 3; //đơn hàng mới được đặt và đang chờ xác nhận
     case PROCESSED = 4; //đơn hàng đã được xác nhận và đang được chuẩn bị
-    case ON_HOLD = 5; // đơn hàng tạm thời dừng lại do bị vấn đề về thông tin người gửi hoặc thiếu hàng
-
+    case REJECT = 5; // đơn hàng tạm thời dừng lại do bị vấn đề về thông tin người gửi hoặc thiếu hàng
     case CANCELLED = 6; // đơn hàng đã bị hủy
-    case SHIPPED = 7; //đơn hàng đã giao cho bên đơn vị vận chuyển
-    case COMPLETED = 8; //đơn hàng đã giao cho bên đơn vị vận chuyển
+//    case SHIPPED = 7; //đơn hàng đã giao cho bên đơn vị vận chuyển
+//    case COMPLETED = 8; //đơn hàng đã giao cho bên đơn vị vận chuyển
 
     public static function getArrayStatus()
     {
@@ -20,10 +19,10 @@ enum OrderStatusEnum: int
             self::ORDERING->value => "Đang thanh toán",
             self::PENDING->value => "Chờ xử lý",
             self::PROCESSED->value => "Đã xử lý",
-            self::ON_HOLD->value => "Tạm dừng",
+            self::REJECT->value => "Đã từ chối",
             self::CANCELLED->value => "Đã hủy",
-            self::SHIPPED->value => "Đang vận chuyển",
-            self::COMPLETED->value => "Hoàn thành",
+//            self::SHIPPED->value => "Đang vận chuyển",
+//            self::COMPLETED->value => "Hoàn thành",
         ];
     }
 

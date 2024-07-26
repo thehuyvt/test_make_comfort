@@ -43,12 +43,14 @@
                                     <label for="name">Tên sản phẩm</label>
                                     <input type="text" id="name" name="name" class="form-control"
                                            placeholder="Nhập tên sản phẩm" value="{{ $product->name }}">
+
                                 </div>
 
                                 <div class="form-group">
                                     <label for="slug">Slug</label>
                                     <input type="text" id="slug" name="slug" class="form-control"
                                            placeholder="Nhập slug" value="{{ $product->slug }}">
+
                                 </div>
 
                                 <div class="form-group">
@@ -97,7 +99,7 @@
                                                 name="status"
                                                 id="status{{$key}}"
                                                 value="{{$key}}"
-                                                @checked($product->status == $key)
+                                                @checked($loop->first || $product->status == $key)
                                             >
                                             <label class="form-check-label mr-5" for="status{{$key}}">
                                                 {{$status}}
@@ -215,15 +217,6 @@
     </div>
 @endsection
 @push('js')
-    <script src="{{asset('js/vendor/dropzone.min.js')}}"></script>
-
-    <!-- File upload js -->
-    <script src="{{ asset('js/ui/component.fileupload.js')}}"></script>
-    <script src="{{ asset('dists/select2-4.0.13/dist/js/select2.min.js') }}"></script>
-    <script src="{{ asset('dists/jquery.form.js') }}"></script>
-    <script src="{{ asset('dists/notify.min.js') }}"></script>
-    <script src="{{ asset('js/vendor/summernote-bs4.min.js') }}"></script>
-    <script src="{{ asset('js/pages/demo.summernote.js') }}"></script>
     <script>
         //Preview ảnh
         document.getElementById('images').addEventListener('change', function(event) {
@@ -311,11 +304,11 @@
         $(document).ready(function () {
             $('#form').ajaxForm({
                 beforeSubmit: function(arr, $form, options) {
-                    console.log(arr, $form, options);
                     return true;
                 },
                 success:    function() {
                     $.notify("Lưu thông tin thành công", "success");
+                    // window.location.href = '/products';
                 },
                 error: function(response){
                     $.notify("Không thành công, vui lòng kiểm tra lại thông tin sản phẩm!", "error");
@@ -381,7 +374,6 @@
             });
             //nếu khi bấm nút generate thì sẽ tạo ra b
             var oldVariants = @json($product->variants ?? []);
-            console.log(oldVariants);
             $('#btn_generate').click(function() {
                 var options = {}; // Đối tượng để lưu trữ tất cả các options
 

@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\OrderStatusEnum;
 use App\Enums\UserRoleEnum;
 use App\Enums\UserStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdatePasswordRequest;
-use App\Http\Requests\UpdateUserRequest;
+use App\Models\Order;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
@@ -23,22 +24,41 @@ class UserController extends Controller
     {
         $this->model = new User();
 
-        $routeName = Route::currentRouteName();
-        $arr = explode('.', $routeName);
-        $arr = array_map('ucfirst', $arr);
-        $title = implode(' - ', $arr);
+//        $routeName = Route::currentRouteName();
+//        $arr = explode('.', $routeName);
+//        $arr = array_map('ucfirst', $arr);
+//        $title = implode(' - ', $arr);
+        $title = 'Nhân viên';
         $listStatus = UserStatusEnum::getArrayStatus();
         View::share('title', $title);
         View::share('listStatus', $listStatus);
     }
     public function index()
     {
-        $users = User::query()->where('role', '!=', 1)->paginate(10);
+        $users = User::query()->where('role', '!=', 1)->paginate(5);
         return view('user.index', [
             'users' => $users,
         ]);
     }
 
+
+    public function show($userId)
+    {
+        $user = User::query()->findOrFail($userId);
+        $orders = Order::query()->where('user_id', $userId)->paginate(5);
+        $orderCounts = Order::where('user_id', $userId)
+            ->selectRaw('COUNT(*) as total')
+            ->selectRaw('SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as processed', [OrderStatusEnum::PROCESSED->value])
+            ->selectRaw('SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as rejected', [OrderStatusEnum::REJECT->value])
+            ->first();
+        return view('user.detail', [
+            'totalOrders' => $orderCounts->total,
+            'processedOrders' => $orderCounts->processed,
+            'rejectedOrders' => $orderCounts->rejected,
+            'orders' => $orders,
+            'user' => $user
+        ]);
+    }
     /**
      * Show the form for creating a new resource.
      */

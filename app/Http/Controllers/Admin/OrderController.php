@@ -10,6 +10,8 @@ use App\Http\Requests\UpdateOrderRequest;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\Product;
+use App\Models\ProductVariant;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 
@@ -70,10 +72,6 @@ class OrderController extends Controller
             ->where('status', $status)
             ->orderByDesc('placed_at')
             ->paginate(10);
-//        if ($orders === null){
-//            return redirect()->route('orders.index')
-//                ->with('error', 'Đơn hàng không tồn tại!');
-//        }
         foreach ($orders as $order){
             $order->payment_method = OrderPaymentMethodEnum::getNamePaymentMethod($order->payment_method);
             $order->status = OrderStatusEnum::getNameStatus($order->status);
@@ -86,22 +84,6 @@ class OrderController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreOrderRequest $request)
-    {
-        //
-    }
-
-    /**
      * Display the specified resource.
      */
     public function show(Order $order)
@@ -111,12 +93,14 @@ class OrderController extends Controller
         }
         $order->payment_method = OrderPaymentMethodEnum::getNamePaymentMethod($order->payment_method);
         $order->status = OrderStatusEnum::getNameStatus($order->status);
+        $user = User::query()->find($order->user_id);
         $orderProducts = OrderProduct::query()->with('variant.product')
             ->where('order_id', $order->id)
             ->get();
         return view('order.detail',[
                 'order' => $order,
                 'orderProducts' => $orderProducts,
+                'user' => $user,
             ]
         );
     }
@@ -141,28 +125,51 @@ class OrderController extends Controller
         );
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateOrderRequest $request, Order $order )
+    public function update($orderId, UpdateOrderRequest $request)
     {
-        //
+        $order = Order::query()->find($orderId);
+        if (!$order){
+            return redirect()->route('orders.index')->with('error', 'Đơn hàng không tồn tại!');
+        }
+        $order->user_id = session('id');
+        $order->name = $request->name;
+        $order->address = $request->address;
+        $order->phone_number = $request->phone_number;
+        $order->save();
+        return redirect()->route('orders.edit', $order->id)
+            ->with('success', 'Cập nhật thông tin nhận hàng thành công!');
     }
 
     public function updateStatus(Order $order)
     {
         if($order->status === OrderStatusEnum::PENDING->value){
             $order->status = OrderStatusEnum::PROCESSED->value;
+            $order->user_id = session('id');
+            $order->approved_at = now();
             $order->save();
+            $user = User::query()->find($order->user_id);
         }
-        return response()->json(['success' => true]);
+        return response()->json(['success' => true, 'data' => ['user_name' => $user->name]]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Order $order)
+    public function rejectOrder(Order $order)
     {
-        //
+        if($order->status === OrderStatusEnum::PENDING->value){
+            $productsInOrder = $order->orderProducts;
+            foreach ($productsInOrder as $product)
+            {
+                $productVariant = ProductVariant::query()->find($product->product_variant_id);
+                $productVariant->quantity += $product->quantity;
+                $productVariant->save();
+            }
+            $order->status = OrderStatusEnum::REJECT->value;
+            $order->user_id = session('id');
+            $order->save();
+
+            $user = User::query()->find($order->user_id);
+        }else{
+            return false;
+        }
+        return response()->json(['success' => true, 'data' => ['user_name' => $user->name]]);
     }
 }

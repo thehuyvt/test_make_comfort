@@ -44,17 +44,14 @@
                             <td>{{ $order->created_at->format('d/m/Y') }}</td>
                             <td>
                                 @switch($order->status)
-                                    @case(OrderStatusEnum::DRAFT->value)
-                                        <span class="badge badge-secondary">{{ $order->statusName}}</span>
-                                        @break
-                                    @case(OrderStatusEnum::ORDERING->value)
-                                        <span class="badge badge-info">{{ $order->statusName}}</span>
-                                        @break
                                     @case(OrderStatusEnum::PENDING->value)
                                         <span class="badge badge-warning">{{ $order->statusName}}</span>
                                         @break
                                     @case(OrderStatusEnum::PROCESSED->value)
                                         <span class="badge badge-success">{{ $order->statusName}}</span>
+                                        @break
+                                    @case(OrderStatusEnum::REJECT->value)
+                                        <span class="badge badge-secondary">{{ $order->statusName}}</span>
                                         @break
                                     @case(OrderStatusEnum::CANCELLED->value)
                                         <span class="badge badge-danger">{{ $order->statusName}}</span>

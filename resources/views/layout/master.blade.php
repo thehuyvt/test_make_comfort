@@ -68,21 +68,25 @@
     <!-- ============================================================== -->
 </div>
 <!-- END wrapper -->
-
+    </div>
+</div>
 <!-- bundle -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="{{asset('js/vendor.min.js')}}"></script>
 <script src="{{asset('js/app.min.js')}}"></script>
+<script src="{{asset('js/vendor/dropzone.min.js')}}"></script>
 
+<!-- File upload js -->
+<script src="{{ asset('js/ui/component.fileupload.js')}}"></script>
+<script src="{{ asset('dists/select2-4.0.13/dist/js/select2.min.js') }}"></script>
+<script src="{{ asset('dists/jquery.form.js') }}"></script>
+<script src="{{ asset('dists/notify.min.js') }}"></script>
+<script src="{{ asset('js/vendor/summernote-bs4.min.js') }}"></script>
+<script src="{{ asset('js/pages/demo.summernote.js') }}"></script>
 @stack('js')
 
 {{--<!-- third party js -->--}}
 <script src="{{asset('js/vendor/jquery-jvectormap-1.2.2.min.js')}}"></script>
 <script src="assets/js/vendor/jquery-jvectormap-world-mill-en.js"></script>
-{{--<!-- third party js ends -->--}}
-
-{{--<!-- demo app -->--}}
-{{--<script src="assets/js/pages/demo.dashboard.js"></script>--}}
-{{--<!-- end demo js-->--}}
 </body>
 </html>

@@ -59,27 +59,31 @@
                 </a>
             </li>
 
-            <li class="side-nav-item">
-                <a href="{{route('users.index')}}" class="side-nav-link">
-                    <i class="uil-users-alt"></i>
-                    <span> Danh sách nhân viên </span>
-                </a>
-            </li>
+            @if(session('role') === \App\Enums\UserRoleEnum::ADMIN->value)
+                <li class="side-nav-item">
+                    <a href="{{route('users.index')}}" class="side-nav-link">
+                        <i class="uil-users-alt"></i>
+                        <span> Danh sách nhân viên </span>
+                    </a>
+                </li>
+            @endif
+
             <li class="side-nav-item">
                 <a href="{{route('management-customers.index')}}" class="side-nav-link">
                     <i class="uil-chat-bubble-user"></i>
                     <span> Danh sách khách hàng </span>
                 </a>
             </li>
-            <li class="side-nav-item">
-                <a href="{{route('statistical.revenue')}}" class="side-nav-link">
-                    <i class="uil-chart-bar-alt"></i>
-                    <span> Thống kê doanh thu </span>
-                </a>
-            </li>
+            @if(session('role') === \App\Enums\UserRoleEnum::ADMIN->value)
+                <li class="side-nav-item">
+                    <a href="{{route('statistical.revenue')}}" class="side-nav-link">
+                        <i class="uil-chart-bar-alt"></i>
+                        <span> Thống kê doanh thu </span>
+                    </a>
+                </li>
+            @endif
         </ul>
         <!-- End Sidebar -->
-
         <div class="clearfix"></div>
 
     </div>
